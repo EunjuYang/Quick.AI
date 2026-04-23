@@ -117,4 +117,4 @@ private:
 
 } // namespace quick_dot_ai
 
-#endif /* __CAUSALLM_RMS_NORM_LAYER_H__ */
+#endif /* __RMS_NORM_LAYER_H__ */
