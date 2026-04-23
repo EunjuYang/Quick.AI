@@ -134,10 +134,12 @@ log_step "3/4" "Prepare json.hpp"
 
 if [ ! -f "$SCRIPT_DIR/json.hpp" ]; then
     log_info "json.hpp not found. Downloading..."
-    # prepare_encoder.sh expects target directory as first argument and version as second
-    # It copies json.hpp to ../Applications/CausalLM/ if version is 0.2
-    "$NNTRAINER_ROOT/jni/prepare_encoder.sh" "$NNTRAINER_ROOT/builddir" "0.2"
-    
+    # Use Quick.AI's own prepare_encoder.sh so the downloaded json.hpp
+    # is copied to the Quick.AI project root (the nntrainer submodule
+    # ships a legacy variant that drops it into Applications/CausalLM/
+    # instead and leaves our expected location empty).
+    "$SCRIPT_DIR/jni/prepare_encoder.sh" "$NNTRAINER_ROOT/builddir" "0.2"
+
     if [ ! -f "$SCRIPT_DIR/json.hpp" ]; then
         log_error "Failed to download json.hpp"
         exit 1
