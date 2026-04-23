@@ -1,14 +1,14 @@
-# 🏗️ Quick.AI Architecture
+# Quick.AI Architecture
 
 This document describes how Quick.AI is layered, what each binary and `.so` is for, and how the build wires everything together. For a top-level intro, see the [project README](../README.md).
 
 ---
 
-## 🗺️ Bird's-eye view
+## Bird's-eye view
 
 ```mermaid
 flowchart TB
-    subgraph Apps["👤 Your application / CLI"]
+    subgraph Apps["Your application / CLI"]
         BIN["quick_dot_ai_run<br/>quick_dot_ai_quantize<br/>quick_dot_ai_test_api"]
     end
 
@@ -16,7 +16,7 @@ flowchart TB
         direction TB
         API["libquick_dot_ai_api.so<br/><sub>stable C API</sub>"]
         CORE["libquick_dot_ai.so<br/><sub>causal-LM engine · namespace quick_dot_ai</sub>"]
-        subgraph LAYERS["🧩 Per-layer plugins (.so)"]
+        subgraph LAYERS["Per-layer plugins (.so)"]
             direction LR
             L1["rms_norm"]
             L2["swiglu"]
@@ -29,7 +29,7 @@ flowchart TB
         end
     end
 
-    subgraph DEPS["🧱 Foundations"]
+    subgraph DEPS["Foundations"]
         NNT["NNTrainer<br/><sub>subprojects/nntrainer · meson subproject</sub>"]
         SYS["OpenBLAS · OpenMP · Flatbuffers"]
     end
@@ -54,7 +54,7 @@ flowchart TB
 
 ---
 
-## 🧱 Layers, top to bottom
+## Layers, top to bottom
 
 ### 1. Binaries (`quick_dot_ai_*`)
 
@@ -131,7 +131,7 @@ On Android the same role is filled by NDK-bundled libomp + an in-tree BLAS path;
 
 ---
 
-## 🧭 Design choices worth knowing
+## Design choices worth knowing
 
 ### Stable C API as the integration seam
 Renaming during a brand change is tempting; we resisted on `api/causal_lm_api.h` because it would silently break every embedder downstream. Quick.AI's C symbols and enum prefixes (`CAUSAL_LM_QUANTIZATION_*`) stay as-is.
@@ -147,7 +147,7 @@ The `*-slim` model variants under `models/` use FSU to stream MoE experts from d
 
 ---
 
-## 🧩 Adding a new model family
+## Adding a new model family
 
 1. Create `models/<your_family>/`.
 2. Implement `<your_family>_causallm.{h,cpp}` deriving from the appropriate causal-LM template.
