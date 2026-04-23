@@ -33,7 +33,7 @@ inline float convert_scalar(uint16_t h) {
   return nntrainer::compute_fp16_to_fp32(h);
 }
 
-namespace causallm {
+namespace quick_dot_ai {
 
 #define tile_size 4
 
@@ -1315,4 +1315,4 @@ nntrainer::LayerPluggable ml_train_layer_pluggable{create_mha_core_layer,
 
 #endif
 
-} // namespace causallm
+} // namespace quick_dot_ai

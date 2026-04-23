@@ -10,7 +10,7 @@ causallm_moe_layer_src_abs = [meson.current_source_dir() / 'qwen_moe_layer.cpp']
 causallm_moe_layer = shared_library(
     'qwen_moe_layer',
     causallm_moe_layer_src_abs,
-    include_directories: [causallm_layer_inc, qwen3_moe_inc],
+    include_directories: [quick_dot_ai_layer_inc, qwen3_moe_inc],
     dependencies: [nntrainer_dep, nntrainer_ccapi_dep, openmp_dep],
     install: true,
     install_dir: application_install_dir
@@ -21,6 +21,6 @@ causallm_moe_layer_dep = declare_dependency(
     include_directories: qwen3_moe_inc
 )
 
-causallm_src += qwen3_moe_src
-causallm_inc += qwen3_moe_inc
-causallm_layer_dependencies += [causallm_moe_layer_dep]
+quick_dot_ai_src += qwen3_moe_src
+quick_dot_ai_inc += qwen3_moe_inc
+quick_dot_ai_layer_dependencies += [causallm_moe_layer_dep]

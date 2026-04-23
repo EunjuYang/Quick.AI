@@ -20,7 +20,7 @@
 #include <common_properties.h>
 #include <layer_impl.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @class   GptOssMoELayer
@@ -163,7 +163,7 @@ private:
     const nntrainer::Tensor &up_bias = {},
     const nntrainer::Tensor &down_bias = {});
 };
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __cplusplus */
 #endif /* __GPT_OSS_MOE_LAYER_H__ */

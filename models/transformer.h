@@ -47,7 +47,7 @@
 #include <tokenizers_c.h>
 #include <tokenizers_cpp.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /*** ALIAS ****/
 using LayerHandle = std::shared_ptr<ml::train::Layer>;
@@ -223,6 +223,6 @@ inline json LoadJsonFile(const std::string &file_path) {
                              " | Details: " + e.what());
   }
 }
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif

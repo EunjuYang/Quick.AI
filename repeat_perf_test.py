@@ -21,7 +21,7 @@ def get_thermal_temp():
 
 def get_process_count():
     try:
-        cmd = ["adb", "shell", "ps -ef | grep nntrainer_causallm | grep -v grep | wc -l"]
+        cmd = ["adb", "shell", "ps -ef | grep quick_dot_ai | grep -v grep | wc -l"]
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode == 0:
             return int(result.stdout.strip())
@@ -67,7 +67,7 @@ def run_causallm(model_path, omp_threads=None, taskset_mask=None, input_prompt=N
 
     cmd = [
         "adb", "shell",
-        f"cd /data/local/tmp/nntrainer/causallm && "
+        f"cd /data/local/tmp/quick_dot_ai && "
         f"{export_cmd}{taskset_cmd}./run_causallm.sh {model_path}{prompt_arg}"
     ]
 

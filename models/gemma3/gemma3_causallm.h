@@ -14,7 +14,7 @@
 
 #include <causal_lm.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief Gemma3Transformer class
@@ -90,6 +90,6 @@ public:
 
 private:
 };
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __GEMMA3_CAUSAL_LM_H__ */

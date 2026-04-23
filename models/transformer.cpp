@@ -26,7 +26,7 @@
 #include <swiglu.h>
 #include <tie_word_embedding.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 std::string LoadBytesFromFile(const std::string &path) {
   std::ifstream file(path, std::ios::binary | std::ios::ate);
@@ -435,15 +435,15 @@ void Transformer::registerCustomLayers() {
     static_cast<nntrainer::AppContext *>(ct_engine.getRegisteredContext("cpu"));
 
   try {
-    app_context->registerFactory(nntrainer::createLayer<causallm::SwiGLULayer>);
+    app_context->registerFactory(nntrainer::createLayer<quick_dot_ai::SwiGLULayer>);
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::RMSNormLayer>);
+      nntrainer::createLayer<quick_dot_ai::RMSNormLayer>);
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::MHACoreLayer>);
+      nntrainer::createLayer<quick_dot_ai::MHACoreLayer>);
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::TieWordEmbedding>);
+      nntrainer::createLayer<quick_dot_ai::TieWordEmbedding>);
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::EmbeddingLayer>);
+      nntrainer::createLayer<quick_dot_ai::EmbeddingLayer>);
 
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
@@ -451,4 +451,4 @@ void Transformer::registerCustomLayers() {
   }
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

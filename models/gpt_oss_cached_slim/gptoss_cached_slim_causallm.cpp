@@ -29,7 +29,7 @@
 #include <engine.h>
 #include <gpt_oss_moe_layer_cached.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 std::vector<LayerHandle> GptOssCachedSlimCausalLM::createAttention(
   const int layer_id, int seq_len, int n_heads, int head_dim,
@@ -136,11 +136,11 @@ void GptOssCachedSlimCausalLM::registerCustomLayers() {
 
   try {
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::CachedSlimGptOssMoELayer>);
+      nntrainer::createLayer<quick_dot_ai::CachedSlimGptOssMoELayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
   }
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

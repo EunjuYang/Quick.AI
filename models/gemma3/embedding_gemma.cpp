@@ -12,7 +12,7 @@
 
 #include <embedding_gemma.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 void EmbeddingGemma::setupParameters(json &cfg, json &generation_cfg,
                                      json &nntr_cfg) {
@@ -25,4 +25,4 @@ void EmbeddingGemma::registerCustomLayers() {
   Gemma3Transformer::registerCustomLayers();
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

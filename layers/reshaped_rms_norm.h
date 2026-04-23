@@ -32,7 +32,7 @@
 #include <tensor.h>
 #include <tensor_wrap_specs.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief A custom Reshaped RMS normalization layer for llama.
@@ -126,6 +126,6 @@ private:
   unsigned int feature_size;
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __CAUSALLM_RMS_NORM_LAYER_H__ */

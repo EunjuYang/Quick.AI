@@ -30,7 +30,7 @@
 #include <qwen_moe_layer_fsu.h>
 #include <stdexcept>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -514,4 +514,4 @@ void SlimMoELayer::exportTo(nntrainer::Exporter &exporter,
   exporter.saveResult(moe_props, method, this); // Save MoE specific properties
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

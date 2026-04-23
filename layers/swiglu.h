@@ -26,7 +26,7 @@
 #define WIN_EXPORT
 #endif
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief A SwiGLU layer for llama.
@@ -102,6 +102,6 @@ public:
   inline static const std::string type = "swiglu";
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __SWIGLU_LAYER_H__ */

@@ -17,7 +17,7 @@
 #include <node_exporter.h>
 #include <util_func.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -168,4 +168,4 @@ void EmbeddingPoolingLayer::exportTo(
   LayerImpl::exportTo(exporter, method);
   exporter.saveResult(pooling_props, method, this);
 }
-} // namespace causallm
+} // namespace quick_dot_ai

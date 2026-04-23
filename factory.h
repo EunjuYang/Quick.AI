@@ -18,7 +18,7 @@
 #include <transformer.h>
 #include <unordered_map>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief Factory class
@@ -57,6 +57,6 @@ private:
   std::unordered_map<std::string, Creator> creators;
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif

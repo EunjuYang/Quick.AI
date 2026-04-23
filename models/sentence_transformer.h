@@ -19,7 +19,7 @@
 #include <map>
 #include <transformer.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief SentenceTransformer Class
@@ -111,6 +111,6 @@ private:
   std::string getLastComponent(const std::string &type);
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif

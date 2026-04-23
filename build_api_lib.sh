@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build script for CausalLM API Library
-# This script builds libcausallm_api.so only
+# This script builds libquick_dot_ai_api.so only
 set -e
 
 # Color codes
@@ -88,8 +88,8 @@ echo "Working directory: $(pwd)"
 # Check if CausalLM Core is built
 log_step "1/2" "Check CausalLM Core"
 
-if [ ! -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_core.so" ]; then
-    log_error "libcausallm_core.so not found."
+if [ ! -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_core.so" ]; then
+    log_error "libquick_dot_ai_core.so not found."
     echo "Please run build_android.sh first to build the core library."
     exit 1
 fi
@@ -100,8 +100,8 @@ log_step "2/2" "Build CausalLM API Library"
 
 cd "$SCRIPT_DIR/jni"
 
-log_info "Building with ndk-build (builds libcausallm_api.so)..."
-if ndk-build NDK_PROJECT_PATH=. NDK_LIBS_OUT=./libs NDK_OUT=./obj APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk causallm_api -j $(nproc); then
+log_info "Building with ndk-build (builds libquick_dot_ai_api.so)..."
+if ndk-build NDK_PROJECT_PATH=. NDK_LIBS_OUT=./libs NDK_OUT=./obj APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk quick_dot_ai_api -j $(nproc); then
     log_success "Build completed successfully"
 else
     log_error "Build failed"
@@ -112,7 +112,7 @@ fi
 echo ""
 echo "Build artifacts:"
 
-check_artifact "libcausallm_api.so" || exit 1
+check_artifact "libquick_dot_ai_api.so" || exit 1
 
 # Summary
 log_header "Build Summary"
@@ -121,7 +121,7 @@ echo ""
 echo "Output files are in: $SCRIPT_DIR/jni/libs/arm64-v8a/"
 echo ""
 echo "Libraries:"
-echo "  - libcausallm_api.so (CausalLM API library)"
+echo "  - libquick_dot_ai_api.so (CausalLM API library)"
 echo ""
 echo "To build test app, run:"
 echo "  ./build_test_app.sh"

@@ -16,7 +16,7 @@
 #include <causal_lm.h>
 #include <qwen3_causallm.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief Qwen3CachedSlimMoECausalLM class
@@ -48,6 +48,6 @@ private:
   unsigned int NUM_EXPERTS;
   unsigned int NUM_EXPERTS_PER_TOK;
 };
-}; // namespace causallm
+}; // namespace quick_dot_ai
 
 #endif /* __QWEN_MOE_CAUSAL_LM_H__ */

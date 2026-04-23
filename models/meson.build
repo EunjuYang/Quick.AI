@@ -1,10 +1,10 @@
-causallm_src += [
+quick_dot_ai_src += [
     meson.current_source_dir() / 'causal_lm.cpp',
     meson.current_source_dir() / 'transformer.cpp',
     meson.current_source_dir() / 'sentence_transformer.cpp',
 ]
 
-causallm_inc += include_directories('.')
+quick_dot_ai_inc += include_directories('.')
 
 subdir('gpt_oss')
 subdir('gpt_oss_cached_slim')

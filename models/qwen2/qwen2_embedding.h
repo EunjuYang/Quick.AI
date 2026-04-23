@@ -16,7 +16,7 @@
 #include <qwen2_causallm.h>
 #include <sentence_transformer.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief Qwen2Embedding class
@@ -32,6 +32,6 @@ public:
   virtual ~Qwen2Embedding() {}
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __QWEN2_EMBEDDING_H__ */

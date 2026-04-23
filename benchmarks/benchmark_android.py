@@ -11,7 +11,7 @@ This script can sweep through multiple configurations:
   - Different prompt lengths: -p 256,512,1024
 
 Example:
-  python3 benchmark_android.py -m /data/local/tmp/nntrainer/causallm/models/qwen3-0.6b -t 1,2,4,8 -n 128,256
+  python3 benchmark_android.py -m /data/local/tmp/quick_dot_ai/models/qwen3-0.6b -t 1,2,4,8 -n 128,256
 """
 
 import subprocess
@@ -206,12 +206,12 @@ def run_single_trial(model_path, omp_threads=None):
     if omp_threads:
         cmd = [
             "adb", "shell",
-            f"cd /data/local/tmp/nntrainer/causallm && OMP_NUM_THREADS={omp_threads} ./run_causallm.sh '{model_path}'"
+            f"cd /data/local/tmp/quick_dot_ai && OMP_NUM_THREADS={omp_threads} ./run_causallm.sh '{model_path}'"
         ]
     else:
         cmd = [
             "adb", "shell",
-            f"cd /data/local/tmp/nntrainer/causallm && ./run_causallm.sh '{model_path}'"
+            f"cd /data/local/tmp/quick_dot_ai && ./run_causallm.sh '{model_path}'"
         ]
     
     # Capture output
@@ -326,7 +326,7 @@ def main():
         description="nntrainer benchmark with configuration sweeping for nntrainer CausalLM models"
     )
     parser.add_argument("-m", "--model", type=str, required=True,
-                        help="Model directory path (on device, e.g., /data/local/tmp/nntrainer/causallm/models/qwen3-0.6b-q40)")
+                        help="Model directory path (on device, e.g., /data/local/tmp/quick_dot_ai/models/qwen3-0.6b-q40)")
     parser.add_argument("-p", "--n-prompt", type=str, default="512",
                         help="Number of prompt tokens, comma-separated (default: 512)")
     parser.add_argument("-n", "--n-gen", type=str, default="0",

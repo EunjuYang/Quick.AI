@@ -19,7 +19,7 @@
 #include <filesystem>
 #include <iostream>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 SentenceTransformer::SentenceTransformer(json &cfg, json &generation_cfg,
                                          json &nntr_cfg) :
@@ -283,13 +283,13 @@ void SentenceTransformer::registerCustomLayers() {
 
   try {
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::EmbeddingPoolingLayer>);
+      nntrainer::createLayer<quick_dot_ai::EmbeddingPoolingLayer>);
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::EmbeddingNormalizeLayer>);
+      nntrainer::createLayer<quick_dot_ai::EmbeddingNormalizeLayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
   }
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

@@ -16,7 +16,7 @@
 
 #include "rms_norm.h"
 
-namespace causallm {
+namespace quick_dot_ai {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -109,4 +109,4 @@ nntrainer::LayerPluggable ml_train_layer_pluggable{create_rms_norm_layer,
 
 #endif
 
-} // namespace causallm
+} // namespace quick_dot_ai

@@ -26,7 +26,7 @@
 #include <layer_devel.h>
 #include <layer_impl.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @class   TieWordEmbedding
@@ -169,7 +169,7 @@ private:
                                 unsigned int from, unsigned int to,
                                 bool training);
 };
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __cplusplus */
 #endif /* __CUSTOM_TIE_WORD_EMBEDDING_H__ */

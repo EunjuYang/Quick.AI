@@ -15,7 +15,7 @@
 
 #include "swiglu.h"
 
-namespace causallm {
+namespace quick_dot_ai {
 
 static constexpr size_t OUT_IDX = 0;
 static constexpr size_t INPUT_IDX_1 = 0;
@@ -114,4 +114,4 @@ nntrainer::LayerPluggable ml_train_layer_pluggable{create_swiglu_layer,
 
 #endif
 
-} // namespace causallm
+} // namespace quick_dot_ai

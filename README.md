@@ -1,13 +1,13 @@
-# ☄️ CausalLM Inference with NNTrainer
+# ☄️ Quick.AI — CausalLM Inference with NNTrainer
 
 This application provides a standalone executable and an optional C API to run causal LLM models using NNTrainer.
 It supports *inference* mode (text generation) on various devices, including Android.
 
 ## Features
 
-- **Standalone Application (`nntr_causallm`)**: A command-line tool to load models and generate text.
-- **C API (Optional)**: A lightweight C interface (`libcausallm_api.so`) for integrating LLM capabilities into other applications (e.g., Android JNI, iOS, or other C/C++ apps).
-- **Core Library**: The core implementation is separated into `libcausallm_core.so` for modularity.
+- **Standalone Application (`quick_dot_ai_run`)**: A command-line tool to load models and generate text.
+- **C API (Optional)**: A lightweight C interface (`libquick_dot_ai_api.so`) for integrating LLM capabilities into other applications (e.g., Android JNI, iOS, or other C/C++ apps).
+- **Core Library**: The core implementation is separated into `libquick_dot_ai_core.so` for modularity.
 - **Supported Backends**: CPU (OpenMP), with GPU/NPU support planned.
 
 ## Supported models
@@ -21,9 +21,9 @@ It supports *inference* mode (text generation) on various devices, including And
 
 For more details, please refer to the [Model Documentation](models/README.md).
 
-## CausalLM API
+## Quick.AI API
 
-The CausalLM application exposes a C API for easy integration with other applications (e.g., Android JNI).
+Quick.AI exposes a C API for easy integration with other applications (e.g., Android JNI).
 The API allows loading models, running inference, and retrieving performance metrics.
 
 For detailed documentation, please refer to [API Documentation](api/README.md).
@@ -46,8 +46,8 @@ For detailed documentation, please refer to [API Documentation](api/README.md).
 This repository builds against `nntrainer`, which is bundled as a git submodule under `subprojects/nntrainer`. Clone with submodules (or init them after cloning):
 
 ```bash
-$ git clone --recursive https://github.com/eunjuyang/nntrainer-causallm.git
-$ cd nntrainer-causallm
+$ git clone --recursive https://github.com/EunjuYang/Quick.AI.git
+$ cd Quick.AI
 # or, if already cloned without --recursive:
 $ git submodule update --init --recursive
 ```
@@ -63,12 +63,12 @@ Run the model:
 
 ```bash
 $ export OMP_THREAD_LIMIT=16 && export OMP_WAIT_POLICY=active && export OMP_PROC_BIND=true && export OMP_PLACES=cores && export OMP_NUM_THREADS=4
-$ ./build/nntr_causallm {your model config folder}
+$ ./build/quick_dot_ai_run {your model config folder}
 ```
 
 e.g.,
 ```bash
-$ ./build/nntr_causallm ./res/qwen3/qwen3-4b/
+$ ./build/quick_dot_ai_run ./res/qwen3/qwen3-4b/
 ```
 
 ### 3. Android Build & Test
@@ -88,22 +88,22 @@ The following scripts are provided at the repository root to handle the build pr
 1.  **`build_android.sh`** (Core + App):
     - Builds `nntrainer` core library for Android.
     - Builds `tokenizers-cpp` dependency if missing.
-    - Compiles **`libcausallm_core.so`** (Core logic) and **`nntrainer_causallm`** (Main Executable).
+    - Compiles **`libquick_dot_ai_core.so`** (Core logic) and **`quick_dot_ai`** (Main Executable).
     - **Usage**: `./build_android.sh`
 
 2.  **`build_api_lib.sh`** (API Library):
-    - Requires `libcausallm_core.so` (run `build_android.sh` first).
-    - Compiles **`libcausallm_api.so`** (C-API wrapper).
+    - Requires `libquick_dot_ai_core.so` (run `build_android.sh` first).
+    - Compiles **`libquick_dot_ai_api.so`** (C-API wrapper).
     - **Usage**: `./build_api_lib.sh`
 
 3.  **`build_test_app.sh`** (Test App):
     - Requires both Core and API libraries.
-    - Compiles **`test_api`** (Simple C++ test app for API).
+    - Compiles **`quick_dot_ai_test_api`** (Simple C++ test app for API).
     - **Usage**: `./build_test_app.sh`
 
 4.  **`install_android.sh`**:
     - Installs all built artifacts to a connected Android device.
-    - Creates helper scripts (`run_causallm.sh`, `run_test_api.sh`) on the device.
+    - Creates helper scripts (`run_quick_dot_ai.sh`, `run_test_api.sh`) on the device.
     - **Usage**: `./install_android.sh`
 
 #### Build Instructions
@@ -118,40 +118,40 @@ The following scripts are provided at the repository root to handle the build pr
     ./build_android.sh
     ```
     Artifacts in `jni/libs/arm64-v8a/`:
-    - `libcausallm_core.so`
-    - `nntrainer_causallm`
+    - `libquick_dot_ai_core.so`
+    - `quick_dot_ai`
 
 3.  **Build API Library (Optional)**:
     ```bash
     ./build_api_lib.sh
     ```
     Artifacts:
-    - `libcausallm_api.so`
+    - `libquick_dot_ai_api.so`
 
 4.  **Build Test App (Optional)**:
     ```bash
     ./build_test_app.sh
     ```
     Artifacts:
-    - `test_api`
+    - `quick_dot_ai_test_api`
 
 5.  **Install & Run**:
     ```bash
     ./install_android.sh
     ```
-    
+
     **Run Main App:**
     ```bash
-    adb shell /data/local/tmp/nntrainer/causallm/run_causallm.sh [model_path]
+    adb shell /data/local/tmp/quick_dot_ai/run_quick_dot_ai.sh [model_path]
     ```
 
     **Run API Test:**
     ```bash
-    adb shell /data/local/tmp/nntrainer/causallm/run_test_api.sh [model_name] [prompt]
+    adb shell /data/local/tmp/quick_dot_ai/run_test_api.sh [model_name] [prompt]
     ```
 ## Quantizing Models
 
-NNTrainer provides a quantization utility (`nntr_quantize`) that converts FP32 CausalLM model weights to lower-precision data types, reducing model size for efficient on-device inference.
+Quick.AI provides a quantization utility (`quick_dot_ai_quantize`) that converts FP32 CausalLM model weights to lower-precision data types, reducing model size for efficient on-device inference.
 
 ### Supported Quantization Types
 
@@ -163,7 +163,7 @@ NNTrainer provides a quantization utility (`nntr_quantize`) that converts FP32 C
 | `Q4_K`    | 4-bit K-quant quantization |
 | `Q6_K`    | 6-bit K-quant quantization |
 
-> **Note (Q4_0 platform dependency):** `Q4_0` quantization produces platform-specific binary formats — the output generated on x86 is **not compatible** with ARM, and vice versa. You must run `nntr_quantize` on the **same platform architecture** where the quantized model will be used for inference. Cross-platform quantization is not yet supported.
+> **Note (Q4_0 platform dependency):** `Q4_0` quantization produces platform-specific binary formats — the output generated on x86 is **not compatible** with ARM, and vice versa. You must run `quick_dot_ai_quantize` on the **same platform architecture** where the quantized model will be used for inference. Cross-platform quantization is not yet supported.
 
 
 ### Prerequisites
@@ -176,17 +176,17 @@ The model directory must contain the following files:
 
 ### Building
 
-The quantization utility is built automatically with the CausalLM application:
+The quantization utility is built automatically with the Quick.AI application:
 
 ```bash
 meson setup build && ninja -C build
-# The executable is: build/nntr_quantize
+# The executable is: build/quick_dot_ai_quantize
 ```
 
 ### Usage
 
 ```
-nntr_quantize <model_path> [options]
+quick_dot_ai_quantize <model_path> [options]
 ```
 
 **Options:**
@@ -204,16 +204,16 @@ nntr_quantize <model_path> [options]
 
 ```bash
 # Quantize FC layers to Q4_0 (default), embedding stays FP32:
-nntr_quantize /path/to/qwen3-4b
+quick_dot_ai_quantize /path/to/qwen3-4b
 
 # Quantize FC layers to Q4_0 and embedding to Q6_K:
-nntr_quantize /path/to/qwen3-4b --fc_dtype Q4_0 --embd_dtype Q6_K
+quick_dot_ai_quantize /path/to/qwen3-4b --fc_dtype Q4_0 --embd_dtype Q6_K
 
 # Quantize to a different output directory:
-nntr_quantize /path/to/qwen3-4b -o /output/qwen3-4b-q4
+quick_dot_ai_quantize /path/to/qwen3-4b -o /output/qwen3-4b-q4
 
 # Use a pre-configured target nntr_config.json:
-nntr_quantize /path/to/qwen3-4b --config /path/to/target_nntr_config.json
+quick_dot_ai_quantize /path/to/qwen3-4b --config /path/to/target_nntr_config.json
 ```
 
 ### Output
@@ -226,9 +226,9 @@ After quantization, run the quantized model:
 ```bash
 # If output is in the same directory:
 mv /path/to/model/nntr_config_quantized.json /path/to/model/nntr_config.json
-nntr_causallm /path/to/model
+quick_dot_ai_run /path/to/model
 
 # If output is in a different directory:
 cp /path/to/model/config.json /path/to/model/generation_config.json /output/dir/
-nntr_causallm /output/dir
+quick_dot_ai_run /output/dir
 ```

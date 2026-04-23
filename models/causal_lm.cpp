@@ -38,7 +38,7 @@
 #include <causal_lm.h>
 #include <llm_util.hpp>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 CausalLM::CausalLM(json &cfg, json &generation_cfg, json &nntr_cfg) :
   Transformer(cfg, generation_cfg, nntr_cfg, ModelType::CAUSALLM) {
@@ -166,7 +166,7 @@ void CausalLM::save_kvcache(std::string path, int to_) {
   std::function<void(ml::train::Layer &, nntrainer::RunLayerContext &, void *)>
     fn = [&f](ml::train::Layer &l, nntrainer::RunLayerContext &context,
               void *idx) {
-      if (l.getType() == causallm::MHACoreLayer::type) {
+      if (l.getType() == quick_dot_ai::MHACoreLayer::type) {
         int to = static_cast<int>(reinterpret_cast<intptr_t>(idx));
         auto k_cache = context.getTensor(0);
         auto v_cache = context.getTensor(1);
@@ -196,7 +196,7 @@ void CausalLM::load_kvcache(std::string path, int to_) {
   std::function<void(ml::train::Layer &, nntrainer::RunLayerContext &, void *)>
     fn = [&f](ml::train::Layer &l, nntrainer::RunLayerContext &context,
               void *idx) {
-      if (l.getType() == causallm::MHACoreLayer::type) {
+      if (l.getType() == quick_dot_ai::MHACoreLayer::type) {
         auto k_cache = context.getTensor(0);
         auto v_cache = context.getTensor(1);
         int to = static_cast<int>(reinterpret_cast<intptr_t>(idx));
@@ -278,7 +278,7 @@ void CausalLM::registerCustomLayers() {
   const auto app_context =
     static_cast<nntrainer::AppContext *>(ct_engine.getRegisteredContext("cpu"));
   try {
-    app_context->registerFactory(nntrainer::createLayer<causallm::LmHeadLayer>);
+    app_context->registerFactory(nntrainer::createLayer<quick_dot_ai::LmHeadLayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
@@ -580,4 +580,4 @@ std::string CausalLM::getOutput(int batch_idx) const {
   return output_list[batch_idx];
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

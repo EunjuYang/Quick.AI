@@ -28,7 +28,7 @@
 #include <engine.h>
 #include <qwen_moe_layer.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 void Qwen3MoECausalLM::setupParameters(json &cfg, json &generation_cfg,
                                        json &nntr_cfg) {
@@ -69,11 +69,11 @@ void Qwen3MoECausalLM::registerCustomLayers() {
     static_cast<nntrainer::AppContext *>(ct_engine.getRegisteredContext("cpu"));
 
   try {
-    app_context->registerFactory(nntrainer::createLayer<causallm::MoELayer>);
+    app_context->registerFactory(nntrainer::createLayer<quick_dot_ai::MoELayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
   }
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

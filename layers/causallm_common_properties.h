@@ -34,7 +34,7 @@
 #include <tensor.h>
 #include <utility>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 namespace props {
 
@@ -99,6 +99,6 @@ public:
 
 WIN_EXPORT enum RMSParams { gamma };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif

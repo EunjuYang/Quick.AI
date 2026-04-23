@@ -1,4 +1,4 @@
-project('nntrainer-causallm', 'c', 'cpp',
+project('quick_dot_ai', 'c', 'cpp',
   version: '0.1.0',
   license: ['apache-2.0'],
   meson_version: '>=0.55.0',
@@ -26,12 +26,12 @@ nntrainer_proj = subproject('nntrainer',
 
 nntrainer_dep       = nntrainer_proj.get_variable('nntrainer_dep')
 nntrainer_ccapi_dep = nntrainer_proj.get_variable('nntrainer_ccapi_dep')
-application_install_dir = get_option('prefix') / get_option('libdir') / 'nntrainer-causallm'
+application_install_dir = get_option('prefix') / get_option('libdir') / 'quick_dot_ai'
 
 openmp_dep = dependency('openmp')
 powershell_prog = find_program('powershell', required: (build_machine.system() == 'windows'))
 
-causallm_src = [
+quick_dot_ai_src = [
     meson.current_source_dir() / 'huggingface_tokenizer.cpp',
     meson.current_source_dir() / 'llm_util.cpp',
     meson.current_source_dir() / 'api' / 'causal_lm_api.cpp',
@@ -42,26 +42,26 @@ executable_src = [
     meson.current_source_dir() / 'main.cpp',
 ]
 
-causallm_inc_abs = [meson.current_source_dir()]
-causallm_inc = [include_directories('.')]
+quick_dot_ai_inc_abs = [meson.current_source_dir()]
+quick_dot_ai_inc = [include_directories('.')]
 
 # Build layer dependency
-causallm_layer_dependencies = []
+quick_dot_ai_layer_dependencies = []
 subdir('layers')
 
 # Add common layers to dependencies
-causallm_layer_dependencies += [
-    causallm_rms_norm_dep,
-    causallm_tie_word_embedding_dep,
-    causallm_lm_head_dep,
-    causallm_swiglu_dep,
-    causallm_mha_core_dep,
-    causallm_embedding_layer_dep,
-    causallm_lm_head_dep,
-    causallm_reshaped_rms_norm_dep,
-    causallm_qkv_layer_dep,
-    causallm_embedding_pooling_layer_dep,
-    causallm_embedding_normalize_layer_dep,
+quick_dot_ai_layer_dependencies += [
+    quick_dot_ai_rms_norm_dep,
+    quick_dot_ai_tie_word_embedding_dep,
+    quick_dot_ai_lm_head_dep,
+    quick_dot_ai_swiglu_dep,
+    quick_dot_ai_mha_core_dep,
+    quick_dot_ai_embedding_layer_dep,
+    quick_dot_ai_lm_head_dep,
+    quick_dot_ai_reshaped_rms_norm_dep,
+    quick_dot_ai_qkv_layer_dep,
+    quick_dot_ai_embedding_pooling_layer_dep,
+    quick_dot_ai_embedding_normalize_layer_dep,
 ]
 
 subdir('models')
@@ -81,31 +81,31 @@ if get_option('default_library') == 'shared'
     cpp_args += [ '-DPLUGGABLE' ]
 endif
 
-causallm = shared_library('causallm',
-    causallm_src,
+quick_dot_ai = shared_library('quick_dot_ai',
+    quick_dot_ai_src,
     dependencies: [
         nntrainer_dep,
         nntrainer_ccapi_dep,
-        causallm_layer_dependencies,
+        quick_dot_ai_layer_dependencies,
         tokenizer_dependencies,
         openmp_dep
     ],
-    include_directories: causallm_inc,
+    include_directories: quick_dot_ai_inc,
     install: true,
     install_dir: application_install_dir,
     link_args: [tokenizer_path],
     cpp_args: cpp_args
 )
 
-causallm_dep = declare_dependency(
-    link_with: [causallm],
-    include_directories: causallm_inc
+quick_dot_ai_dep = declare_dependency(
+    link_with: [quick_dot_ai],
+    include_directories: quick_dot_ai_inc
 )
 
-e = executable('nntr_causallm',
+e = executable('quick_dot_ai_run',
     executable_src,
-    include_directories: causallm_inc,
-    dependencies: [nntrainer_dep, nntrainer_ccapi_dep, causallm_layer_dependencies, causallm_dep],
+    include_directories: quick_dot_ai_inc,
+    dependencies: [nntrainer_dep, nntrainer_ccapi_dep, quick_dot_ai_layer_dependencies, quick_dot_ai_dep],
 )
 
 
@@ -113,10 +113,10 @@ quantize_src = [
     meson.current_source_dir() / 'quantize.cpp',
 ]
 
-e_quantize = executable('nntr_quantize',
+e_quantize = executable('quick_dot_ai_quantize',
     quantize_src,
-    include_directories: causallm_inc,
-    dependencies: [nntrainer_dep, nntrainer_ccapi_dep, causallm_layer_dependencies, causallm_dep],
+    include_directories: quick_dot_ai_inc,
+    dependencies: [nntrainer_dep, nntrainer_ccapi_dep, quick_dot_ai_layer_dependencies, quick_dot_ai_dep],
 )
 
 
@@ -124,10 +124,10 @@ test_api_src = [
     meson.current_source_dir() / 'api' / 'test_api.cpp',
 ]
 
-test_api = executable('test_api',
+test_api = executable('quick_dot_ai_test_api',
     test_api_src,
-    include_directories: causallm_inc,
-    dependencies: [nntrainer_dep, nntrainer_ccapi_dep, causallm_layer_dependencies, causallm_dep],
+    include_directories: quick_dot_ai_inc,
+    dependencies: [nntrainer_dep, nntrainer_ccapi_dep, quick_dot_ai_layer_dependencies, quick_dot_ai_dep],
     build_by_default: true,
     install: false,
 )

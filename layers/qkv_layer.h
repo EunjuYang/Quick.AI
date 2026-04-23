@@ -26,7 +26,7 @@
 #include <common_properties.h>
 #include <layer_impl.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 namespace props {
 
@@ -147,7 +147,7 @@ private:
   std::array<unsigned int, 3> weight_idx; /**< indices of the weights */
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __cplusplus */
 #endif /* __QKV_LAYER_H__ */

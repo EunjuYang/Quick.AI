@@ -17,7 +17,7 @@
 #include <common_properties.h>
 #include <layer_impl.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 namespace props {
 
@@ -188,6 +188,6 @@ private:
     pooling_props;
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif

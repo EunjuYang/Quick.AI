@@ -36,7 +36,7 @@ using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::nanoseconds;
 
-namespace causallm {
+namespace quick_dot_ai {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -532,4 +532,4 @@ void CachedSlimMoELayer::updateTensorsByInputDimensions(
   context.updateOutput(SINGLE_INOUT_IDX, output_dim);
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

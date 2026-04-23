@@ -6,5 +6,5 @@ gemma3_src = [
 
 gemma3_inc = include_directories('.')
 
-causallm_src += gemma3_src
-causallm_inc += gemma3_inc
+quick_dot_ai_src += gemma3_src
+quick_dot_ai_inc += gemma3_inc

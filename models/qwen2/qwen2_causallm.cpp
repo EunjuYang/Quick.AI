@@ -17,7 +17,7 @@
 #include <engine.h>
 #include <reshaped_rms_norm.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 std::vector<LayerHandle> Qwen2Transformer::createAttention(
   const int layer_id, int seq_len, int n_heads, int head_dim,
@@ -73,4 +73,4 @@ std::vector<LayerHandle> Qwen2Transformer::createAttention(
   return layers;
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

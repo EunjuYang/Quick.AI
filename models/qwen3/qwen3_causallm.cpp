@@ -28,7 +28,7 @@
 #include <engine.h>
 #include <reshaped_rms_norm.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 std::vector<LayerHandle> Qwen3Transformer::createAttention(
   const int layer_id, int seq_len, int n_heads, int head_dim,
@@ -110,7 +110,7 @@ void Qwen3Transformer::registerCustomLayers() {
 
   try {
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::ReshapedRMSNormLayer>);
+      nntrainer::createLayer<quick_dot_ai::ReshapedRMSNormLayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
@@ -122,4 +122,4 @@ void Qwen3CausalLM::registerCustomLayers() {
   Qwen3Transformer::registerCustomLayers();
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

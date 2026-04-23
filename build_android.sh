@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Build script for CausalLM Android application
-# This script builds libcausallm_core.so and nntrainer_causallm executable
+# This script builds libquick_dot_ai_core.so and quick_dot_ai executable
 set -e
 
 # Color codes
@@ -144,7 +144,7 @@ else
 fi
 log_success "json.hpp ready"
 
-# Step 4: Build CausalLM (libcausallm_core.so and nntrainer_causallm)
+# Step 4: Build CausalLM (libquick_dot_ai_core.so and quick_dot_ai)
 log_step "4/4" "Build CausalLM Core (library + executable)"
 
 cd "$SCRIPT_DIR/jni"
@@ -152,9 +152,9 @@ cd "$SCRIPT_DIR/jni"
 # Clean previous builds
 rm -rf libs obj
 
-log_info "Building with ndk-build (builds causallm_core, nntrainer_causallm, nntr_quantize)..."
+log_info "Building with ndk-build (builds quick_dot_ai_core, quick_dot_ai, quick_dot_ai_quantize)..."
 # We explicitly set paths to ensure outputs are predictable
-if ndk-build NDK_PROJECT_PATH=. NDK_LIBS_OUT=./libs NDK_OUT=./obj APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk causallm_core nntrainer_causallm  nntr_quantize -j $(nproc); then
+if ndk-build NDK_PROJECT_PATH=. NDK_LIBS_OUT=./libs NDK_OUT=./obj APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk quick_dot_ai_core quick_dot_ai  quick_dot_ai_quantize -j $(nproc); then
     log_success "Build completed successfully"
 else
     log_error "Build failed"
@@ -164,18 +164,18 @@ fi
 # Verify outputs
 log_info "Build artifacts:"
 
-check_artifact "libcausallm_core.so" || exit 1
-check_artifact "nntrainer_causallm" || exit 1
-check_artifact "nntr_quantize" || exit 1
+check_artifact "libquick_dot_ai_core.so" || exit 1
+check_artifact "quick_dot_ai" || exit 1
+check_artifact "quick_dot_ai_quantize" || exit 1
 
 # Summary
 log_header "Build Summary"
 log_success "Build completed successfully!"
 log_info "Output files are in: $SCRIPT_DIR/jni/libs/arm64-v8a/"
 log_info "Executables:"
-log_info "  - nntrainer_causallm (main application), nntr_quantize"
+log_info "  - quick_dot_ai (main application), quick_dot_ai_quantize"
 log_info "Libraries:"
-log_info "  - libcausallm_core.so (CausalLM Core library)"
+log_info "  - libquick_dot_ai_core.so (CausalLM Core library)"
 log_info "  - libnntrainer.so (nntrainer library)"
 log_info "  - libccapi-nntrainer.so (nntrainer C/C API)"
 log_info "  - libc++_shared.so (C++ runtime)"

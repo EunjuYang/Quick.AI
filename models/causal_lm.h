@@ -41,7 +41,7 @@
 
 #include <transformer.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief CausalLM Class
@@ -157,6 +157,6 @@ protected:
   std::mt19937 rng; /**< Random Number Gen */
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif

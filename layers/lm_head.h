@@ -26,7 +26,7 @@
 #include <layer_devel.h>
 #include <layer_impl.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @class   LMHead layer
@@ -123,7 +123,7 @@ private:
   std::tuple<nntrainer::props::Unit> lmhead_props;
   std::array<unsigned int, 2> weight_idx; /**< indices of the weights */
 };
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif
 #endif

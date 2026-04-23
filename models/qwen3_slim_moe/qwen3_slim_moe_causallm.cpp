@@ -28,7 +28,7 @@
 #include <engine.h>
 #include <qwen_moe_layer_fsu.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 void Qwen3SlimMoECausalLM::setupParameters(json &cfg, json &generation_cfg,
                                            json &nntr_cfg) {
@@ -70,11 +70,11 @@ void Qwen3SlimMoECausalLM::registerCustomLayers() {
 
   try {
     app_context->registerFactory(
-      nntrainer::createLayer<causallm::SlimMoELayer>);
+      nntrainer::createLayer<quick_dot_ai::SlimMoELayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
   }
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

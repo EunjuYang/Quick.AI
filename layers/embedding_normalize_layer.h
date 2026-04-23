@@ -16,7 +16,7 @@
 
 #include <layer_impl.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @class   EmbeddingNormalizeLayer
@@ -83,6 +83,6 @@ public:
   static constexpr const char *type = "embedding_normalize";
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __EMBEDDING_NORMALIZE_LAYER_H__ */

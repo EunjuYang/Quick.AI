@@ -17,7 +17,7 @@
 #include <qwen3_causallm.h>
 #include <sentence_transformer.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @brief Qwen3Embedding Class
@@ -49,6 +49,6 @@ public:
   void registerCustomLayers() override;
 };
 
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif // __QWEN3_EMBEDDING_H__

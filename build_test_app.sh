@@ -91,19 +91,19 @@ log_step "1/2" "Check Dependencies"
 MISSING_DEPS=false
 
 # Check Core Lib
-if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_core.so" ]; then
-    echo -e "  ${GREEN}[OK]${NC} libcausallm_core.so found"
+if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_core.so" ]; then
+    echo -e "  ${GREEN}[OK]${NC} libquick_dot_ai_core.so found"
 else
-    echo -e "  ${RED}[MISSING]${NC} libcausallm_core.so"
+    echo -e "  ${RED}[MISSING]${NC} libquick_dot_ai_core.so"
     echo "    -> Run ./build_android.sh first"
     MISSING_DEPS=true
 fi
 
 # Check API Lib
-if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_api.so" ]; then
-    echo -e "  ${GREEN}[OK]${NC} libcausallm_api.so found"
+if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_api.so" ]; then
+    echo -e "  ${GREEN}[OK]${NC} libquick_dot_ai_api.so found"
 else
-    echo -e "  ${RED}[MISSING]${NC} libcausallm_api.so"
+    echo -e "  ${RED}[MISSING]${NC} libquick_dot_ai_api.so"
     echo "    -> Run ./build_api_lib.sh first"
     MISSING_DEPS=true
 fi

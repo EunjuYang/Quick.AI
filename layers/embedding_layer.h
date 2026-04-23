@@ -26,7 +26,7 @@
 #include <common_properties.h>
 #include <layer_impl.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 /**
  * @class   EmbeddingLayer
@@ -131,7 +131,7 @@ private:
     embedding_props;
   unsigned int weight_idx;
 };
-} // namespace causallm
+} // namespace quick_dot_ai
 
 #endif /* __cplusplus */
 #endif /* __EMBEDDING_H__ */

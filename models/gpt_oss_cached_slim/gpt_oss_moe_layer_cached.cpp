@@ -34,7 +34,7 @@ using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::nanoseconds;
 
-namespace causallm {
+namespace quick_dot_ai {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -576,4 +576,4 @@ void CachedSlimGptOssMoELayer::exportTo(
   exporter.saveResult(moe_props, method, this); // Save MoE specific properties
 }
 
-} // namespace causallm
+} // namespace quick_dot_ai

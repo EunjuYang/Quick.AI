@@ -201,68 +201,68 @@ std::string resolve_architecture(std::string model_type,
  * @brief Register all CausalLM model factories
  */
 void registerAllModels() {
-  auto &factory = causallm::Factory::Instance();
+  auto &factory = quick_dot_ai::Factory::Instance();
 
   factory.registerModel("LlamaForCausalLM", [](json cfg, json generation_cfg,
                                                json nntr_cfg) {
-    return std::make_unique<causallm::CausalLM>(cfg, generation_cfg, nntr_cfg);
+    return std::make_unique<quick_dot_ai::CausalLM>(cfg, generation_cfg, nntr_cfg);
   });
   factory.registerModel("Qwen2ForCausalLM",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::Qwen2CausalLM>(
+                          return std::make_unique<quick_dot_ai::Qwen2CausalLM>(
                             cfg, generation_cfg, nntr_cfg);
                         });
   factory.registerModel("Qwen2Embedding",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::Qwen2Embedding>(
+                          return std::make_unique<quick_dot_ai::Qwen2Embedding>(
                             cfg, generation_cfg, nntr_cfg);
                         });
   factory.registerModel("Qwen3ForCausalLM",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::Qwen3CausalLM>(
+                          return std::make_unique<quick_dot_ai::Qwen3CausalLM>(
                             cfg, generation_cfg, nntr_cfg);
                         });
   factory.registerModel("Qwen3MoeForCausalLM",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::Qwen3MoECausalLM>(
+                          return std::make_unique<quick_dot_ai::Qwen3MoECausalLM>(
                             cfg, generation_cfg, nntr_cfg);
                         });
   factory.registerModel("Qwen3SlimMoeForCausalLM", [](json cfg,
                                                       json generation_cfg,
                                                       json nntr_cfg) {
-    return std::make_unique<causallm::Qwen3SlimMoECausalLM>(cfg, generation_cfg,
+    return std::make_unique<quick_dot_ai::Qwen3SlimMoECausalLM>(cfg, generation_cfg,
                                                             nntr_cfg);
   });
   factory.registerModel(
     "Qwen3CachedSlimMoeForCausalLM",
     [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<causallm::Qwen3CachedSlimMoECausalLM>(
+      return std::make_unique<quick_dot_ai::Qwen3CachedSlimMoECausalLM>(
         cfg, generation_cfg, nntr_cfg);
     });
   factory.registerModel("Qwen3Embedding",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::Qwen3Embedding>(
+                          return std::make_unique<quick_dot_ai::Qwen3Embedding>(
                             cfg, generation_cfg, nntr_cfg);
                         });
   factory.registerModel("GptOssForCausalLM",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::GptOssForCausalLM>(
+                          return std::make_unique<quick_dot_ai::GptOssForCausalLM>(
                             cfg, generation_cfg, nntr_cfg);
                         });
   factory.registerModel(
     "GptOssCachedSlimCausalLM",
     [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<causallm::GptOssCachedSlimCausalLM>(
+      return std::make_unique<quick_dot_ai::GptOssCachedSlimCausalLM>(
         cfg, generation_cfg, nntr_cfg);
     });
   factory.registerModel("Gemma3ForCausalLM",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::Gemma3CausalLM>(
+                          return std::make_unique<quick_dot_ai::Gemma3CausalLM>(
                             cfg, generation_cfg, nntr_cfg);
                         });
   factory.registerModel("EmbeddingGemma",
                         [](json cfg, json generation_cfg, json nntr_cfg) {
-                          return std::make_unique<causallm::EmbeddingGemma>(
+                          return std::make_unique<quick_dot_ai::EmbeddingGemma>(
                             cfg, generation_cfg, nntr_cfg);
                         });
 }
@@ -423,15 +423,15 @@ int main(int argc, char *argv[]) {
     std::cout << "==========================================================\n";
     std::cout << "[1/5] Loading configurations from: " << model_path << "\n";
 
-    json cfg = causallm::LoadJsonFile(model_path + "/config.json");
+    json cfg = quick_dot_ai::LoadJsonFile(model_path + "/config.json");
     json generation_cfg =
-      causallm::LoadJsonFile(model_path + "/generation_config.json");
-    json nntr_cfg = causallm::LoadJsonFile(model_path + "/nntr_config.json");
+      quick_dot_ai::LoadJsonFile(model_path + "/generation_config.json");
+    json nntr_cfg = quick_dot_ai::LoadJsonFile(model_path + "/nntr_config.json");
 
     // If a target config is specified, read dtypes from it
     if (!target_config_path.empty()) {
       std::cout << "  Using target config: " << target_config_path << "\n";
-      json target_cfg = causallm::LoadJsonFile(target_config_path);
+      json target_cfg = quick_dot_ai::LoadJsonFile(target_config_path);
       if (target_cfg.contains("fc_layer_dtype"))
         fc_dtype_str = target_cfg["fc_layer_dtype"].get<std::string>();
       if (target_cfg.contains("embedding_dtype"))
@@ -504,7 +504,7 @@ int main(int argc, char *argv[]) {
       architecture = resolve_architecture(model_type, architecture);
     }
 
-    auto model = causallm::Factory::Instance().create(architecture, cfg,
+    auto model = quick_dot_ai::Factory::Instance().create(architecture, cfg,
                                                       generation_cfg, nntr_cfg);
     if (!model) {
       throw std::runtime_error("Failed to create model for architecture: " +
@@ -591,11 +591,11 @@ int main(int argc, char *argv[]) {
     if (output_dir == model_path) {
       std::cout << "  1. Rename nntr_config_quantized.json to "
                    "nntr_config.json\n";
-      std::cout << "  2. nntr_causallm " << model_path << "\n";
+      std::cout << "  2. quick_dot_ai_run " << model_path << "\n";
     } else {
       std::cout << "  1. Copy config.json and generation_config.json to "
                 << output_dir << "\n";
-      std::cout << "  2. nntr_causallm " << output_dir << "\n\n";
+      std::cout << "  2. quick_dot_ai_run " << output_dir << "\n\n";
     }
 
   } catch (const std::exception &e) {

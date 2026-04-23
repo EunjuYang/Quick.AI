@@ -18,7 +18,7 @@
 #include <node_exporter.h>
 #include <util_func.h>
 
-namespace causallm {
+namespace quick_dot_ai {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -254,4 +254,4 @@ nntrainer::LayerPluggable ml_train_layer_pluggable{create_embedding_layer,
 
 #endif
 
-} // namespace causallm
+} // namespace quick_dot_ai
