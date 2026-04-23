@@ -77,7 +77,7 @@ fi
 
 # Set NNTRAINER_ROOT
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NNTRAINER_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+NNTRAINER_ROOT="${NNTRAINER_ROOT:-$(cd "$SCRIPT_DIR/subprojects/nntrainer" && pwd)}"
 export NNTRAINER_ROOT
 
 log_header "Build CausalLM API Library"

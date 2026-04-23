@@ -8,7 +8,7 @@ $(error ANDROID_NDK is not defined!)
 endif
 
 ifndef NNTRAINER_ROOT
-NNTRAINER_ROOT := $(LOCAL_PATH)/../../..
+NNTRAINER_ROOT := $(LOCAL_PATH)/../subprojects/nntrainer
 endif
 
 NNTRAINER_INCLUDES := $(NNTRAINER_ROOT)/builddir/android_build_result/include/nntrainer
