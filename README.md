@@ -23,11 +23,11 @@ Qwen 3, GPT-OSS, Gemma 3, Llama and more, with <strong>MoE on phones</strong> vi
 </p>
 
 <p>
-  <a href="#-quick-start">Quick start</a> ·
-  <a href="#-see-it-in-action">Demos</a> ·
-  <a href="#-supported-models">Models</a> ·
-  <a href="#-android-build">Android</a> ·
-  <a href="#-quantization">Quantization</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#see-it-in-action">Demos</a> ·
+  <a href="#supported-models">Models</a> ·
+  <a href="#android-build">Android</a> ·
+  <a href="#quantization">Quantization</a> ·
   <a href="docs/architecture.md">Architecture</a>
 </p>
 
@@ -37,9 +37,9 @@ Qwen 3, GPT-OSS, Gemma 3, Llama and more, with <strong>MoE on phones</strong> vi
 
 <div align="center">
 
-### ⚡ Quick.AI in three numbers
+### Quick.AI in three numbers
 
-| 🐘 → 🪶 | 📦 | 🔒 |
+| Peak RAM | Library size | Network use |
 |:---:|:---:|:---:|
 | **16.5 GB → 1.3 GB** | **~13 MB** | **0 bytes** |
 | Peak RAM for Qwen3-MoE 30B with FSU | Single core inference library | Sent over the network at runtime |
@@ -48,31 +48,31 @@ Qwen 3, GPT-OSS, Gemma 3, Llama and more, with <strong>MoE on phones</strong> vi
 
 ---
 
-## ✨ Why Quick.AI?
+## Why Quick.AI?
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-### 🧠 MoE that fits in your pocket
+### MoE that fits in your pocket
 Run **30B-parameter Mixture-of-Experts** models in **~1.3 GB of RAM** with Flash Storage Utilization (FSU) — experts stream in from disk only when their tokens fire.
 
-### ⚡ Tuned for the metal
+### Tuned for the metal
 Hand-written kernels for **ARMv8.2-a** (FP16, dotprod, i8mm) and **AVX2** on x86_64. Multi-threaded with OpenMP, NEON-vectorized hot paths.
 
-### 🔒 Offline by design
+### Offline by design
 Weights, prompts, and activations stay on the device. No telemetry, no Python runtime at inference time.
 
 </td>
 <td width="50%" valign="top">
 
-### 🧩 Pluggable layers
+### Pluggable layers
 Each transformer building block (RMSNorm, SwiGLU, QKV, MHA core, tied embeddings…) ships as an **independently loadable `.so`** — drop in your own without recompiling the world.
 
-### 🔌 Embed anywhere
+### Embed anywhere
 Native **C and C++ APIs** plus a clean Android JNI build. Same source tree builds for desktop, server, and mobile.
 
-### 🪶 Zero‑install quantizer
+### Zero‑install quantizer
 `quick_dot_ai_quantize` shrinks an FP32 checkpoint to **Q4_0 / Q4_K / Q6_K / FP16** in one command.
 
 </td>
@@ -81,7 +81,7 @@ Native **C and C++ APIs** plus a clean Android JNI build. Same source tree build
 
 ---
 
-## 🎬 See it in action
+## See it in action
 
 <div align="center">
 
@@ -93,8 +93,8 @@ Native **C and C++ APIs** plus a clean Android JNI build. Same source tree build
 <th align="center">Qwen3-MoE 30B-A3B</th>
 </tr>
 <tr>
-<td align="center"><img src="docs/videos/GPT_OSS_20B_Demo.gif" width="380"/></td>
-<td align="center"><img src="docs/videos/Qwen_30B_Demo.gif" width="380"/></td>
+<td align="center"><img src="docs/videos/GPT_OSS_20B_Demo.gif" width="300"/></td>
+<td align="center"><img src="docs/videos/Qwen_30B_Demo.gif" width="300"/></td>
 </tr>
 </table>
 
@@ -102,16 +102,16 @@ Native **C and C++ APIs** plus a clean Android JNI build. Same source tree build
 
 <table>
 <tr>
-<th align="center">🐘 Load whole model<br/><sub>Qwen3-30B-A3B</sub></th>
-<th align="center">🪶 Load experts on the fly<br/><sub>Quick.AI / FSU</sub></th>
+<th align="center">Load whole model<br/><sub>Qwen3-30B-A3B</sub></th>
+<th align="center">Load experts on the fly<br/><sub>Quick.AI / FSU</sub></th>
 </tr>
 <tr>
-<td align="center"><img src="docs/videos/moe-full.gif" width="380"/></td>
-<td align="center"><img src="docs/videos/moe-on-the-fly.gif" width="380"/></td>
+<td align="center"><img src="docs/videos/moe-full.gif" width="300"/></td>
+<td align="center"><img src="docs/videos/moe-on-the-fly.gif" width="300"/></td>
 </tr>
 <tr>
 <td align="center"><b>Memory: 16.5 GB</b></td>
-<td align="center"><b>Memory: 1.3 GB</b> ✨</td>
+<td align="center"><b>Memory: 1.3 GB</b></td>
 </tr>
 </table>
 
@@ -119,22 +119,22 @@ Native **C and C++ APIs** plus a clean Android JNI build. Same source tree build
 
 ---
 
-## 🤖 Supported models
+## Supported models
 
 | Family | Variants | Notes |
 |---|---|---|
-| 🦙 **Llama** | 1B / 3B / 7B-class | reference architecture |
-| 🌪️ **Qwen 2** | 0.5B – 7B | causal LM |
-| 🌊 **Qwen 3** | 0.6B · 1.7B · 4B · 7B · 14B · 32B | [HF: Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B) |
-| 🧬 **Qwen 3-MoE** | 30B-A3B | [HF: Qwen3-30B-A3B](https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507) · **FSU** |
-| 🛰️ **GPT-OSS** | MoE 20B · 120B | [HF: gpt-oss-20b](https://huggingface.co/openai/gpt-oss-20b) · **FSU** |
-| 💎 **Gemma 3** | all causal variants | + sentence-embedding head |
+| **Llama** | 1B / 3B / 7B-class | reference architecture |
+| **Qwen 2** | 0.5B – 7B | causal LM |
+| **Qwen 3** | 0.6B · 1.7B · 4B · 8B · 14B · 32B | [HF: Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B) |
+| **Qwen 3-MoE** | 30B-A3B | [HF: Qwen3-30B-A3B](https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507) · **FSU** |
+| **GPT-OSS** | MoE 20B · 120B | [HF: gpt-oss-20b](https://huggingface.co/openai/gpt-oss-20b) · **FSU** |
+| **Gemma 3** | all causal variants | + sentence-embedding head |
 
-> 💡 **Bring your own**: subclass the causal-LM template under `models/<your_family>/` and the [factory](factory.h) wires it in. See the [model author guide](models/README.md).
+> **Bring your own**: subclass the causal-LM template under `models/<your_family>/` and the [factory](factory.h) wires it in. See the [model author guide](models/README.md).
 
 ---
 
-## 🚀 Quick start
+## Quick start
 
 ```bash
 # 1 · Clone (with submodules — NNTrainer rides along)
@@ -155,13 +155,13 @@ export OMP_NUM_THREADS=4 OMP_WAIT_POLICY=active OMP_PROC_BIND=true OMP_PLACES=co
 ./build/quick_dot_ai_run ./res/qwen3/qwen3-4b/
 ```
 
-> 📁 **Model layout** — drop a model into `res/<name>/` containing
+> **Model layout** — drop a model into `res/<name>/` containing
 > `config.json`, `generation_config.json`, `tokenizer.json`, `tokenizer_config.json`,
 > `vocab.json`, `nntr_config.json`, and the NNTrainer `.bin` weight file referenced from `nntr_config.json`.
 
 ---
 
-## 📱 Android build
+## Android build
 
 <details open>
 <summary><b>Click to expand the modular Android pipeline</b></summary>
@@ -188,7 +188,8 @@ export ANDROID_NDK=/path/to/android-ndk
 Run on the phone:
 
 ```bash
-adb shell /data/local/tmp/quick_dot_ai/run_quick_dot_ai.sh <model_path>
+adb shell /data/local/tmp/quick_dot_ai/run_causallm.sh <model_path>
+adb shell /data/local/tmp/quick_dot_ai/run_quantize.sh <model_path>
 adb shell /data/local/tmp/quick_dot_ai/run_test_api.sh <model_name> "<prompt>"
 ```
 
@@ -198,7 +199,7 @@ All artifacts land under `jni/libs/arm64-v8a/`.
 
 ---
 
-## 🪶 Quantization
+## Quantization
 
 ```bash
 # Default: FC → Q4_0, embedding → FP32
@@ -220,53 +221,53 @@ All artifacts land under `jni/libs/arm64-v8a/`.
 | `Q4_K` | 4 | FC layers, K-quant accuracy |
 | `Q6_K` | 6 | embedding when 4-bit hurts quality |
 
-> ⚠️ **Q4_0 is ISA-specific** — an x86-quantized Q4_0 binary is not byte-compatible with ARM. Quantize on the same architecture you serve from.
+> **Q4_0 is ISA-specific** — an x86-quantized Q4_0 binary is not byte-compatible with ARM. Quantize on the same architecture you serve from.
 
 After quantization, point `quick_dot_ai_run` at the quantized directory (or `mv nntr_config_quantized.json nntr_config.json` in place and rerun).
 
 ---
 
-## 🧪 Continuous integration
+## Continuous integration
 
 Every PR is gated by:
 
 | Check | What it does |
 |---|---|
-| 🐧 **Linux build** | Meson + Ninja on Ubuntu 22.04 & 24.04 |
-| 🤖 **Android build** | `arm64-v8a`, NDK r26d, Rust `aarch64-linux-android` |
-| 🎨 **C++ format** | clang-format 14 against `.clang-format` |
-| 🛡️ **CodeQL** | security & quality static analysis |
+| **Linux build** | Meson + Ninja on Ubuntu 22.04 & 24.04 |
+| **Android build** | `arm64-v8a`, NDK r26d, Rust `aarch64-linux-android` |
+| **C++ format** | clang-format 14 against `.clang-format` |
+| **CodeQL** | security & quality static analysis |
 
 Workflows live under [`.github/workflows/`](.github/workflows/).
 
 ---
 
-## 📚 Further reading
+## Further reading
 
-- 🏗️ [Architecture deep-dive](docs/architecture.md) — layered diagram, module-by-module breakdown, design choices
-- 📖 [Model implementation guide](models/README.md)
-- 🧩 [C API reference](api/README.md)
-- 📊 [Benchmark tooling](benchmarks/README.md)
-- 🎤 Talks & papers:
+- [Architecture deep-dive](docs/architecture.md) — layered diagram, module-by-module breakdown, design choices
+- [Model implementation guide](models/README.md)
+- [C API reference](api/README.md)
+- [Benchmark tooling](benchmarks/README.md)
+- Talks & papers:
   - [Memory-Efficient LLM Inference on Edge Devices with NNTrainer](https://youtu.be/J2tUmi4bwMY?si=rJyiXkwr5iFrMhIK) — Open Source Summit 2025 Seoul
   - [A New Frontier of AI: On-Device AI Training and Personalization](https://dl.acm.org/doi/abs/10.1145/3639477.3639716) — ICSE-SEIP 2024
   - [NNTrainer: Light-Weight On-Device Training Framework](https://arxiv.org/pdf/2206.04688.pdf) — arXiv 2022
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We love PRs. Before opening one:
 
-1. 🛠️ `meson setup build && ninja -C build` — the same command CI runs.
-2. 🎨 `clang-format -i` on any changed C/C++ files (config in `.clang-format`).
-3. 🧬 Adding a new model family? Drop it under `models/<your_family>/`, wire it into `models/meson.build`, and register it in [`factory.h`](factory.h).
+1. `meson setup build && ninja -C build` — the same command CI runs.
+2. `clang-format -i` on any changed C/C++ files (config in `.clang-format`).
+3. Adding a new model family? Drop it under `models/<your_family>/`, wire it into `models/meson.build`, and register it in [`factory.h`](factory.h).
 
-## 📄 License
+## License
 
 Quick.AI is released under the [Apache License 2.0](LICENSE). NNTrainer, bundled as a submodule, is also Apache-2.0.
 
-## 📖 Citation
+## Citation
 
 If Quick.AI is useful for your research, please cite the NNTrainer paper it builds on:
 
@@ -286,6 +287,6 @@ If Quick.AI is useful for your research, please cite the NNTrainer paper it buil
 
 ---
 
-<sub>Built with ❤️ on top of <a href="https://github.com/nntrainer/nntrainer">NNTrainer</a>.</sub>
+<sub>Built on top of <a href="https://github.com/nntrainer/nntrainer">NNTrainer</a>.</sub>
 
 </div>
