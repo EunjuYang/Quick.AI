@@ -13,10 +13,15 @@ subprojects/packagecache/
 subprojects/.wraplock
 subprojects/*.wrap
 !subprojects/gtest.wrap
+# Wrap-extracted source trees (fetched by `meson setup`, never checked in)
+subprojects/googletest-*/
 
 # Test staging (download_qwen3_0.6b.sh)
 .test_cache/
 models/qwen3-0.6b-w16a16/
+
+# NNTrainer runtime log directory, created at test time
+logs/
 
 # Encoder staging
 encoder/
