@@ -61,8 +61,7 @@ ModelRuntimeConfig make_dummy_runtime() {
   std::strncpy(rc.embedding_dtype, "FP32", sizeof(rc.embedding_dtype) - 1);
   std::strncpy(rc.fc_layer_dtype, "FP32", sizeof(rc.fc_layer_dtype) - 1);
   std::strncpy(rc.lmhead_dtype, "FP32", sizeof(rc.lmhead_dtype) - 1);
-  std::strncpy(rc.model_file_name, "dummy.bin",
-               sizeof(rc.model_file_name) - 1);
+  std::strncpy(rc.model_file_name, "dummy.bin", sizeof(rc.model_file_name) - 1);
   std::strncpy(rc.tokenizer_file, "tokenizer.json",
                sizeof(rc.tokenizer_file) - 1);
   rc.num_bad_word_ids = 0;

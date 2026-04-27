@@ -125,8 +125,7 @@ TEST(CausalLmApiE2E, LoadRunAndFetchMetrics) {
   cfg.verbose = false;
   ASSERT_EQ(setOptions(cfg), CAUSAL_LM_ERROR_NONE);
 
-  ErrorCode load = loadModel(CAUSAL_LM_BACKEND_CPU,
-                             CAUSAL_LM_MODEL_QWEN3_0_6B,
+  ErrorCode load = loadModel(CAUSAL_LM_BACKEND_CPU, CAUSAL_LM_MODEL_QWEN3_0_6B,
                              CAUSAL_LM_QUANTIZATION_W16A16);
   ASSERT_EQ(load, CAUSAL_LM_ERROR_NONE) << "loadModel failed for " << model_dir;
 
@@ -142,7 +141,8 @@ TEST(CausalLmApiE2E, LoadRunAndFetchMetrics) {
     GTEST_SKIP() << "runModel returned INFERENCE_FAILED; typically a "
                     "(tie_word_embeddings=true, lmhead_dtype=Q4_0) combo "
                     "that layers/tie_word_embedding.cpp does not yet "
-                    "support. model_dir=" << model_dir;
+                    "support. model_dir="
+                 << model_dir;
   }
 
   ASSERT_EQ(run, CAUSAL_LM_ERROR_NONE)

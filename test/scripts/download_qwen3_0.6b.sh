@@ -4,10 +4,10 @@
 # @file   download_qwen3_0.6b.sh
 # @date   24 Apr 2026
 # @brief  Fetch / build the Qwen3-0.6B (fc=Q4_0, embed=Q6_K, lmhead=Q6_K)
-#         bundle from github.com/eunjuyang/nntrainer-causallm-models and
+#         bundle from github.com/eunjuyang/quick.ai-models and
 #         stage it under ./models/qwen3-0.6b-w16a16/ where the Quick.AI C
 #         API expects to find it.
-# @see    https://github.com/eunjuyang/nntrainer-causallm-models
+# @see    https://github.com/eunjuyang/quick.ai-models
 # @author Eunju Yang <ej.yang@samsung.com>
 #
 # The Q6_K embedding / LM head is deliberate. Qwen3-0.6B has
@@ -32,13 +32,13 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 INSTALL_ROOT="${1:-$REPO_ROOT}"
 
-MODEL_REPO_URL="https://github.com/eunjuyang/nntrainer-causallm-models.git"
+MODEL_REPO_URL="https://github.com/eunjuyang/quick.ai-models.git"
 MODEL_REPO_BRANCH="${QUICKAI_MODELS_REPO_BRANCH:-main}"
 MODEL_DIR_NAME="qwen3-0.6b-q40-q6k-x86"
 TARGET_DIR_NAME="qwen3-0.6b-w16a16"
 BIN_FILE_NAME="nntr_qwen3_0.6b_w4e6a32.bin"
 
-CACHE_DIR="$INSTALL_ROOT/.test_cache/nntrainer-causallm-models"
+CACHE_DIR="$INSTALL_ROOT/.test_cache/quick.ai-models"
 TARGET_DIR="$INSTALL_ROOT/models/$TARGET_DIR_NAME"
 
 log() { echo "[download_qwen3_0.6b] $*"; }
