@@ -48,7 +48,7 @@ std::string locate_tokenizer_json() {
   const char *candidates[] = {
     "./models/qwen3-0.6b-w16a16/tokenizer.json",
     "./models/qwen3-0.6b-w4a32/tokenizer.json",
-    "./.test_cache/nntrainer-causallm-models/qwen3-0.6b-q40-x86/tokenizer.json",
+    "./.test_cache/quick.ai-models/qwen3-0.6b-q40-x86/tokenizer.json",
   };
   for (auto *p : candidates) {
     if (file_exists(p))
