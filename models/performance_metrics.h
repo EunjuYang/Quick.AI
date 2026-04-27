@@ -20,7 +20,7 @@ extern "C" {
 #endif
 
 /**
- * @brief Performance Metrics
+ * @brief Transformer Performance Metrics (internal)
  */
 typedef struct {
   unsigned int prefill_tokens;
@@ -30,7 +30,7 @@ typedef struct {
   double total_duration_ms;
   double initialization_duration_ms;
   size_t peak_memory_kb;
-} PerformanceMetrics;
+} TransformerPerformanceMetrics;
 
 #ifdef __cplusplus
 }

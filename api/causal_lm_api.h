@@ -22,7 +22,6 @@
 extern "C" {
 #endif
 
-#include "../models/performance_metrics.h"
 #include <stddef.h>
 
 /**
@@ -64,6 +63,19 @@ typedef struct {
   bool debug_mode; /// < @brief Check model file validity during initialization
   bool verbose;    /// < @brief Whether to print output during generation
 } Config;
+
+/**
+ * @brief Performance Metrics (public API)
+ */
+typedef struct {
+  unsigned int prefill_tokens;
+  double prefill_duration_ms;
+  unsigned int generation_tokens;
+  double generation_duration_ms;
+  double total_duration_ms;
+  double initialization_duration_ms;
+  size_t peak_memory_kb;
+} PerformanceMetrics;
 
 /**
  * @brief Set global options
