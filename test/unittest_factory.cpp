@@ -40,13 +40,13 @@ TEST(FactoryTest, RegisteredCreatorIsInvoked) {
   auto &factory = quick_dot_ai::Factory::Instance();
 
   bool creator_invoked = false;
-  factory.registerModel("UT/SpyCreator",
-                        [&creator_invoked](json & /*cfg*/, json & /*gen*/,
-                                           json & /*nntr*/)
-                          -> std::unique_ptr<quick_dot_ai::Transformer> {
-                          creator_invoked = true;
-                          return nullptr;
-                        });
+  factory.registerModel(
+    "UT/SpyCreator",
+    [&creator_invoked](json & /*cfg*/, json & /*gen*/, json & /*nntr*/)
+      -> std::unique_ptr<quick_dot_ai::Transformer> {
+      creator_invoked = true;
+      return nullptr;
+    });
 
   json cfg = json::object();
   json gen = json::object();
