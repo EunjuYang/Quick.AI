@@ -28,7 +28,6 @@ Qwen 3, GPT-OSS, Gemma 3, Llama and more, with <strong>MoE on phones</strong> vi
   <a href="#supported-models">Models</a> ·
   <a href="#android-build">Android</a> ·
   <a href="#quantization">Quantization</a> ·
-  <a href="#chat-template">Chat Template</a> ·
   <a href="docs/architecture.md">Architecture</a>
 </p>
 
@@ -139,26 +138,36 @@ Native **C and C++ APIs** plus a clean Android JNI build. Same source tree build
 
 ```bash
 # 1 · Clone (with submodules — NNTrainer rides along)
-git clone --recursive https://github.com/nntrainer/Quick.AI.git
+git clone --recursive https://github.com/EunjuYang/Quick.AI.git
 cd Quick.AI
 
-# 2 · System deps (Ubuntu 22.04 / 24.04)
-sudo apt-get install -y libopenblas-dev libflatbuffers-dev flatbuffers-compiler \
-                        build-essential pkg-config
+# 2 · System deps (Ubuntu 22.04 / 24.04 — matches CI)
+sudo apt-get install -y build-essential cmake pkg-config \
+                        libopenblas-dev libomp-dev \
+                        libflatbuffers-dev flatbuffers-compiler
 pip install meson ninja
 
-# 3 · Build (~1 min on a modern laptop)
-meson setup build -Denable-fp16=true -Dthread-backend=omp -Domp-num-threads=4
+# 3 · Build (NNTrainer is built from source — 5–15 min on a 4-8 core machine)
+meson setup build
 ninja -C build
 
-# 4 · Generate
+# 4 · Drop a model into res/qwen3/qwen3-4b/ (see "Model layout" below), then:
 export OMP_NUM_THREADS=4 OMP_WAIT_POLICY=active OMP_PROC_BIND=true OMP_PLACES=cores
 ./build/quick_dot_ai_run ./res/qwen3/qwen3-4b/
 ```
 
-> **Model layout** — drop a model into `res/<name>/` containing
-> `config.json`, `generation_config.json`, `tokenizer.json`, `tokenizer_config.json`,
-> `vocab.json`, `nntr_config.json`, and the NNTrainer `.bin` weight file referenced from `nntr_config.json`.
+> **Model layout** — `res/qwen3/qwen3-4b/` ships only `nntr_config.json` and a Python
+> `weight_converter.py`. To run, the directory also needs `config.json`,
+> `generation_config.json`, `tokenizer.json`, `tokenizer_config.json`, `vocab.json`
+> (download from HuggingFace) and the converted `.bin` weight whose filename matches
+> `nntr_config.json:"model_file_name"`. You also need to edit `nntr_config.json:"tokenizer_file"`
+> to the real path of `tokenizer.json` — the CLI opens it verbatim.
+> See [docs/quickstart.md §4](docs/quickstart.md#4-prepare-a-model) for the full step-by-step recipe.
+
+> **Tuning the build** — `enable-fp16`, `thread-backend`, `omp-num-threads` and the like
+> are NNTrainer subproject options, so they need the `nntrainer:` prefix:
+> `meson setup build -Dnntrainer:enable-fp16=true -Dnntrainer:omp-num-threads=4`.
+> Full reference in [docs/build.md](docs/build.md).
 
 ---
 
@@ -228,78 +237,6 @@ After quantization, point `quick_dot_ai_run` at the quantized directory (or `mv 
 
 ---
 
-## Chat Template
-
-Quick.AI supports automatic chat template formatting by reading the `chat_template` field from HuggingFace's `tokenizer_config.json`. This eliminates the need for hardcoded per-model chat formatting.
-
-### How it works
-
-Most HuggingFace models include a `tokenizer_config.json` with a `chat_template` field (Jinja2 format) that defines how to format conversations. Quick.AI includes a built-in mini Jinja2 renderer that processes these templates at runtime.
-
-When a `tokenizer_config.json` is present in the model directory:
-- **CLI (`quick_dot_ai_run`)**: Raw user input provided as a command-line argument is automatically wrapped with the chat template.
-- **C API**: The `apply_chat_template()` function uses the dynamic template instead of hardcoded formats.
-
-If `tokenizer_config.json` is absent or does not contain a `chat_template` field, a warning is printed and the system falls back to hardcoded per-architecture templates (Llama, Qwen, Gemma3).
-
-### Supported template features
-
-The built-in Jinja2 renderer supports the following constructs commonly used in HuggingFace chat templates:
-
-| Feature | Example |
-|---------|---------|
-| For loops | `{% for message in messages %}...{% endfor %}` |
-| Conditionals | `{% if %}...{% elif %}...{% else %}...{% endif %}` |
-| Output expressions | `{{ bos_token }}` |
-| Variable assignment | `{% set offset = 1 %}` |
-| Dict/array access | `message['role']`, `messages[0]` |
-| String concatenation | `'<\|im_start\|>' + message['role']` |
-| Comparison operators | `==`, `!=`, `>`, `<`, `>=`, `<=` |
-| Boolean operators | `and`, `or`, `not` |
-| Loop variables | `loop.first`, `loop.last`, `loop.index`, `loop.index0` |
-| Filters | `\| trim`, `\| length`, `\| tojson` |
-| String methods | `.strip()`, `.startswith()`, `.upper()`, `.split()` |
-| Containment test | `'keyword' in message['content']` |
-| Namespace | `namespace()` for cross-scope variable mutation |
-| Whitespace control | `{%- -%}`, `{{- -}}` |
-
-### Required files
-
-To use chat templates, ensure `tokenizer_config.json` is in your model directory alongside the other config files. This file is included by default when downloading models from HuggingFace.
-
-### Example
-
-```bash
-# With tokenizer_config.json present, raw input is auto-formatted:
-./build/quick_dot_ai_run /path/to/model "What is machine learning?"
-
-# The input will be automatically wrapped, e.g. for Qwen3:
-# <|im_start|>user
-# What is machine learning?<|im_end|>
-# <|im_start|>assistant
-```
-
-### Multi-turn conversations (API)
-
-The C API supports multi-turn conversations through `ChatMessage`:
-
-```cpp
-#include "chat_template.h"
-
-quick_dot_ai::ChatTemplate tmpl = quick_dot_ai::ChatTemplate::fromFile("tokenizer_config.json");
-
-std::vector<quick_dot_ai::ChatMessage> messages = {
-  {"system", "You are a helpful assistant."},
-  {"user", "Hello!"},
-  {"assistant", "Hi there!"},
-  {"user", "How are you?"}
-};
-
-std::string formatted = tmpl.apply(messages);
-```
-
----
-
 ## Continuous integration
 
 Every PR is gated by:
@@ -317,6 +254,10 @@ Workflows live under [`.github/workflows/`](.github/workflows/).
 
 ## Further reading
 
+- [Quick start (verified end-to-end)](docs/quickstart.md) — clone → build → model prep → first generated token
+- [Build reference](docs/build.md) — Linux & Android build options, artifacts, troubleshooting
+- [Runtime reference](docs/runtime.md) — CLI flags, model directory contract, JSON config schemas, env vars
+- [Repository tour](docs/repository.md) — directory-by-directory map of the source tree
 - [Architecture deep-dive](docs/architecture.md) — layered diagram, module-by-module breakdown, design choices
 - [Model implementation guide](models/README.md)
 - [C API reference](api/README.md)
