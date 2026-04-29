@@ -39,7 +39,7 @@
 
 using json = nlohmann::json;
 
-static std::unique_ptr<quick_dot_ai::Transformer> g_model;
+static std::unique_ptr<quick_dot_ai::TransformerBase> g_model;
 static std::mutex g_mutex;
 static bool g_initialized = false;
 static std::string g_architecture = "";
