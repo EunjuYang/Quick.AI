@@ -31,7 +31,7 @@ fetched.
 
 This script:
 
-1. Shallow-clones `github.com/eunjuyang/quick.ai-models` into
+1. Shallow-clones `github.com/nntrainer/Quick.AI-models` into
    `.test_cache/` at the repo root.
 2. Runs the shipped `combine.sh` to reassemble
    `nntr_qwen3_0.6b_w4e4a32.bin` from the ~95 MB split parts and verifies
