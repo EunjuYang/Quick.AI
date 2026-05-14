@@ -31,7 +31,7 @@
 #include <tensor.h>
 #include <tensor_wrap_specs.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @brief A custom RMS normalization layer for llama.
@@ -115,6 +115,6 @@ private:
   std::tuple<props::RMS_NORM_GAMMA_INIT, nntrainer::props::Epsilon> rms_props;
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /* __CAUSALLM_RMS_NORM_LAYER_H__ */
