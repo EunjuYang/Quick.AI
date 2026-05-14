@@ -5,7 +5,7 @@
  * @file    chat_template.cpp
  * @date    10 Apr 2026
  * @brief   Chat template implementation with mini Jinja2 renderer
- * @see     https://github.com/nntrainer/Quick.AI
+ * @see     https://github.com/nntrainer/nntrainer
  * @author  Eunju Yang <ej.yang@samsung.com>
  * @bug     No known bugs except for NYI items
  */
@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 // ============================================================================
 // Token types for the Jinja2 lexer
@@ -1938,4 +1938,4 @@ std::string ChatTemplate::render(const std::string &tmpl,
   }
 }
 
-} // namespace quick_dot_ai
+} // namespace causallm

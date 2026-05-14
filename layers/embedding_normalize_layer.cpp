@@ -20,7 +20,7 @@
 #include <node_exporter.h>
 #include <util_func.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -79,4 +79,4 @@ void EmbeddingNormalizeLayer::exportTo(
   LayerImpl::exportTo(exporter, method);
 }
 
-} // namespace quick_dot_ai
+} // namespace causallm

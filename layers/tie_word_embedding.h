@@ -26,7 +26,7 @@
 #include <layer_devel.h>
 #include <layer_impl.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @class   TieWordEmbedding
@@ -69,9 +69,9 @@ public:
                              bool training) override;
 
   /**
-￼   * @copydoc Layer::incremental_forwarding(RunLayerContext &context, unsigned
-￼   * int from, unsigned int to, bool training)
-￼   */
+￠   * @copydoc Layer::incremental_forwarding(RunLayerContext &context, unsigned
+￠   * int from, unsigned int to, bool training)
+￠   */
   WIN_EXPORT void incremental_forwarding(nntrainer::RunLayerContext &context,
                                          unsigned int from, unsigned int to,
                                          bool training) override;
@@ -129,7 +129,8 @@ public:
                        ml::train::ExecutionMode mode, bool trainable,
                        nntrainer::TensorDim::DataType definedWeightDataType,
                        bool fsu, size_t start_offset = 0,
-                       bool read_from_offset = false) override;
+                       bool read_from_offset = false,
+                       int file_fd = -1) override;
 
   /**
    * @copydic Layer::save()
@@ -169,7 +170,7 @@ private:
                                 unsigned int from, unsigned int to,
                                 bool training);
 };
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /* __cplusplus */
 #endif /* __CUSTOM_TIE_WORD_EMBEDDING_H__ */

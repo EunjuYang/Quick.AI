@@ -11,4 +11,4 @@
  */
 #include "qwen2_embedding.h"
 
-namespace quick_dot_ai {} // namespace quick_dot_ai
+namespace causallm {} // namespace causallm

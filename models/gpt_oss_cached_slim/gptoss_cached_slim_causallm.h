@@ -16,7 +16,7 @@
 
 #include <causal_lm.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @brief GptOssCachedSlimCausalLM
@@ -68,6 +68,6 @@ private:
   float ATTENTION_ROPE_SCALING_FACTOR;
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /** __GPTOSS_CAUSALLM_H__ */

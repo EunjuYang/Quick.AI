@@ -38,7 +38,7 @@
 #include <causal_lm.h>
 #include <llm_util.hpp>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 CausalLM::CausalLM(json &cfg, json &generation_cfg, json &nntr_cfg) :
   Transformer(cfg, generation_cfg, nntr_cfg, ModelType::CAUSALLM) {
@@ -98,9 +98,6 @@ void CausalLM::setupParameters(json &cfg, json &generation_cfg,
   TEMPERATURE = generation_cfg.contains("temperature")
                   ? generation_cfg["temperature"].get<float>()
                   : 0.7;
-  DO_SAMPLE = generation_cfg.contains("do_sample")
-                ? generation_cfg["do_sample"].get<bool>()
-                : false;
   global_token_len = 0;
 }
 
@@ -143,7 +140,7 @@ void CausalLM::registerOutputs(
           puncts.end()) {
         // last symbol is a punctuation, hold on
       } else if (decoded_str.size() >= 3 &&
-                 decoded_str.compare(decoded_str.size() - 3, 3, "") == 0) {
+                 decoded_str.compare(decoded_str.size() - 3, 3, "�") == 0) {
         // ends with an incomplete token, hold on
       } else {
         if (log_output) {
@@ -169,7 +166,7 @@ void CausalLM::save_kvcache(std::string path, int to_) {
   std::function<void(ml::train::Layer &, nntrainer::RunLayerContext &, void *)>
     fn = [&f](ml::train::Layer &l, nntrainer::RunLayerContext &context,
               void *idx) {
-      if (l.getType() == quick_dot_ai::MHACoreLayer::type) {
+      if (l.getType() == causallm::MHACoreLayer::type) {
         int to = static_cast<int>(reinterpret_cast<intptr_t>(idx));
         auto k_cache = context.getTensor(0);
         auto v_cache = context.getTensor(1);
@@ -199,7 +196,7 @@ void CausalLM::load_kvcache(std::string path, int to_) {
   std::function<void(ml::train::Layer &, nntrainer::RunLayerContext &, void *)>
     fn = [&f](ml::train::Layer &l, nntrainer::RunLayerContext &context,
               void *idx) {
-      if (l.getType() == quick_dot_ai::MHACoreLayer::type) {
+      if (l.getType() == causallm::MHACoreLayer::type) {
         auto k_cache = context.getTensor(0);
         auto v_cache = context.getTensor(1);
         int to = static_cast<int>(reinterpret_cast<intptr_t>(idx));
@@ -281,19 +278,15 @@ void CausalLM::registerCustomLayers() {
   const auto app_context =
     static_cast<nntrainer::AppContext *>(ct_engine.getRegisteredContext("cpu"));
   try {
-    app_context->registerFactory(nntrainer::createLayer<quick_dot_ai::LmHeadLayer>);
+    app_context->registerFactory(nntrainer::createLayer<causallm::LmHeadLayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
   }
 }
 
-void CausalLM::run(const WSTR prompt, void *output_buf, bool log_output) {
-  run(prompt, "", "", output_buf, log_output);
-}
-
-void CausalLM::run(const WSTR prompt, const WSTR system_prompt,
-                   const WSTR tail_prompt, void *output_buf, bool log_output) {
+void CausalLM::run(const WSTR prompt, bool do_sample, const WSTR system_prompt,
+                   const WSTR tail_prompt, bool log_output) {
 
   auto start_total = std::chrono::high_resolution_clock::now();
   if (!is_initialized) {
@@ -496,7 +489,7 @@ void CausalLM::run(const WSTR prompt, const WSTR system_prompt,
       model->incremental_inference(BATCH_SIZE, input, label, input_len,
                                    token_generation_idx - 1 + global_token_len,
                                    token_generation_idx + global_token_len);
-    std::vector<unsigned int> ids_list(generate(output_interval[0], DO_SAMPLE));
+    std::vector<unsigned int> ids_list(generate(output_interval[0], do_sample));
     if (token_generation_idx < input_len) {
       for (unsigned int b = 0; b < BATCH_SIZE; ++b) {
         input_sample[static_cast<size_t>(b) * MAX_SEQ_LEN] =
@@ -543,10 +536,6 @@ void CausalLM::run(const WSTR prompt, const WSTR system_prompt,
 
   global_token_len += (generation_cnt + init_len);
 
-  if (output_buf != nullptr) {
-    *static_cast<std::vector<std::string> *>(output_buf) = output_list;
-  }
-
   auto finish_generation = std::chrono::high_resolution_clock::now();
   auto generation_duration =
     std::chrono::duration_cast<std::chrono::milliseconds>(finish_generation -
@@ -591,4 +580,4 @@ std::string CausalLM::getOutput(int batch_idx) const {
   return output_list[batch_idx];
 }
 
-} // namespace quick_dot_ai
+} // namespace causallm

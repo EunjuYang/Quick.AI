@@ -5,7 +5,7 @@
  * @file    chat_template.h
  * @date    10 Apr 2026
  * @brief   Chat template support using tokenizer_config.json
- * @see     https://github.com/nntrainer/Quick.AI
+ * @see     https://github.com/nntrainer/nntrainer
  * @author  Eunju Yang <ej.yang@samsung.com>
  * @bug     No known bugs except for NYI items
  */
@@ -18,7 +18,7 @@
 
 #include "json.hpp"
 
-namespace quick_dot_ai {
+namespace causallm {
 
 using json = nlohmann::json;
 
@@ -101,6 +101,6 @@ private:
   std::string render(const std::string &tmpl, const json &context) const;
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif // __CHAT_TEMPLATE_H__

@@ -23,15 +23,15 @@
 
 #include <qkv_layer.h>
 
-#include <bs_thread_pool_manager.hpp>
 #include <engine.h>
 #include <layer_context.h>
 #include <nntrainer_error.h>
 #include <nntrainer_log.h>
 #include <node_exporter.h>
+#include <thread_manager.h>
 #include <util_func.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 static constexpr size_t SINGLE_INOUT_IDX = 0;
 
@@ -147,9 +147,6 @@ void QKVLayer::incremental_forwarding(nntrainer::RunLayerContext &context,
   input_step_dim.batch(1);
   input_step_dim.height(to - from);
 
-  auto &pool =
-    nntrainer::Engine::Global().getThreadPoolManager()->getThreadPool();
-
   nntrainer::Tensor input_step =
     input_.getSharedDataTensor(input_step_dim, 0, true);
 
@@ -203,4 +200,4 @@ void QKVLayer::updateTensorsByInputDimensions(
   context.updateOutput(QKVParams::K, Koutput_dim);
   context.updateOutput(QKVParams::V, Voutput_dim);
 }
-} // namespace quick_dot_ai
+} // namespace causallm

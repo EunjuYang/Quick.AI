@@ -26,7 +26,7 @@
 #include <common_properties.h>
 #include <layer_impl.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @class   EmbeddingLayer
@@ -69,9 +69,9 @@ public:
                              bool training) override;
 
   /**
-￼   * @copydoc Layer::incremental_forwarding(RunLayerContext &context, unsigned
-￼   * int from, unsigned int to, bool training)
-￼   */
+￠   * @copydoc Layer::incremental_forwarding(RunLayerContext &context, unsigned
+￠   * int from, unsigned int to, bool training)
+￠   */
   WIN_EXPORT void incremental_forwarding(nntrainer::RunLayerContext &context,
                                          unsigned int from, unsigned int to,
                                          bool training) override;
@@ -131,7 +131,7 @@ private:
     embedding_props;
   unsigned int weight_idx;
 };
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /* __cplusplus */
 #endif /* __EMBEDDING_H__ */

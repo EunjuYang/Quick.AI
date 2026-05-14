@@ -35,6 +35,7 @@
 #include "gemma3_causallm.h"
 #include "gptoss_cached_slim_causallm.h"
 #include "gptoss_causallm.h"
+#include "multilingual_tinybert_16mb.h"
 #include "qwen2_causallm.h"
 #include "qwen2_embedding.h"
 #include "qwen3_cached_slim_moe_causallm.h"
@@ -122,6 +123,8 @@ std::string resolve_architecture(std::string model_type,
       return "EmbeddingGemma";
     } else if (architecture == "Qwen2Model") {
       return "Qwen2Embedding";
+    } else if (architecture == "BertForMaskedLM") {
+      return "MultilingualTinyBert";
     } else {
       throw std::invalid_argument(
         "Unsupported architecture for embedding model: " + architecture);
@@ -136,68 +139,73 @@ int main(int argc, char *argv[]) {
   auto start_time = std::chrono::high_resolution_clock::now();
 
   /** Register all runnable causallm models to factory */
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "LlamaForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::CausalLM>(cfg, generation_cfg,
+      return std::make_unique<causallm::CausalLM>(cfg, generation_cfg,
                                                   nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Qwen2ForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Qwen2CausalLM>(cfg, generation_cfg,
+      return std::make_unique<causallm::Qwen2CausalLM>(cfg, generation_cfg,
                                                        nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Qwen2Embedding", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Qwen2Embedding>(cfg, generation_cfg,
+      return std::make_unique<causallm::Qwen2Embedding>(cfg, generation_cfg,
                                                         nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Qwen3ForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Qwen3CausalLM>(cfg, generation_cfg,
+      return std::make_unique<causallm::Qwen3CausalLM>(cfg, generation_cfg,
                                                        nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Qwen3MoeForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Qwen3MoECausalLM>(cfg, generation_cfg,
+      return std::make_unique<causallm::Qwen3MoECausalLM>(cfg, generation_cfg,
                                                           nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Qwen3SlimMoeForCausalLM",
     [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Qwen3SlimMoECausalLM>(
+      return std::make_unique<causallm::Qwen3SlimMoECausalLM>(
         cfg, generation_cfg, nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Qwen3CachedSlimMoeForCausalLM",
     [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Qwen3CachedSlimMoECausalLM>(
+      return std::make_unique<causallm::Qwen3CachedSlimMoECausalLM>(
         cfg, generation_cfg, nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Qwen3Embedding", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Qwen3Embedding>(cfg, generation_cfg,
+      return std::make_unique<causallm::Qwen3Embedding>(cfg, generation_cfg,
                                                         nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "GptOssForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::GptOssForCausalLM>(cfg, generation_cfg,
+      return std::make_unique<causallm::GptOssForCausalLM>(cfg, generation_cfg,
                                                            nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "GptOssCachedSlimCausalLM",
     [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::GptOssCachedSlimCausalLM>(
+      return std::make_unique<causallm::GptOssCachedSlimCausalLM>(
         cfg, generation_cfg, nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "Gemma3ForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::Gemma3CausalLM>(cfg, generation_cfg,
+      return std::make_unique<causallm::Gemma3CausalLM>(cfg, generation_cfg,
                                                         nntr_cfg);
     });
-  quick_dot_ai::Factory::Instance().registerModel(
+  causallm::Factory::Instance().registerModel(
     "EmbeddingGemma", [](json cfg, json generation_cfg, json nntr_cfg) {
-      return std::make_unique<quick_dot_ai::EmbeddingGemma>(cfg, generation_cfg,
+      return std::make_unique<causallm::EmbeddingGemma>(cfg, generation_cfg,
                                                         nntr_cfg);
+    });
+  causallm::Factory::Instance().registerModel(
+    "MultilingualTinyBert", [](json cfg, json generation_cfg, json nntr_cfg) {
+      return std::make_unique<causallm::MultilingualTinyBert>(
+        cfg, generation_cfg, nntr_cfg);
     });
 
   // Validate arguments
@@ -218,10 +226,10 @@ int main(int argc, char *argv[]) {
 
   try {
     // Load configuration files
-    json cfg = quick_dot_ai::LoadJsonFile(model_path + "/config.json");
+    json cfg = causallm::LoadJsonFile(model_path + "/config.json");
     json generation_cfg =
-      quick_dot_ai::LoadJsonFile(model_path + "/generation_config.json");
-    json nntr_cfg = quick_dot_ai::LoadJsonFile(model_path + "/nntr_config.json");
+      causallm::LoadJsonFile(model_path + "/generation_config.json");
+    json nntr_cfg = causallm::LoadJsonFile(model_path + "/nntr_config.json");
 
     if (nntr_cfg.contains("system_prompt")) {
       system_head_prompt =
@@ -246,10 +254,10 @@ int main(int argc, char *argv[]) {
     }
 
     // Load chat template from tokenizer_config.json (if available)
-    quick_dot_ai::ChatTemplate chat_tmpl;
+    causallm::ChatTemplate chat_tmpl;
     std::string tokenizer_config_path = model_path + "/tokenizer_config.json";
     if (std::filesystem::exists(tokenizer_config_path)) {
-      chat_tmpl = quick_dot_ai::ChatTemplate::fromFile(tokenizer_config_path);
+      chat_tmpl = causallm::ChatTemplate::fromFile(tokenizer_config_path);
       if (chat_tmpl.isAvailable()) {
         std::cout << "[Info] Chat template loaded from tokenizer_config.json"
                   << std::endl;
@@ -276,7 +284,7 @@ int main(int argc, char *argv[]) {
     } else {
       if (nntr_cfg.contains("chat_input")) {
         if (architecture == "Gemma3ForCausalLM") {
-          input_text = quick_dot_ai::gemma3::apply_function_gemma_template(
+          input_text = causallm::gemma3::apply_function_gemma_template(
             nntr_cfg["chat_input"]);
         } else {
           std::cerr << "[Warning] 'chat_input' is set but support for model "
@@ -291,26 +299,28 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    auto model = quick_dot_ai::Factory::Instance().create(architecture, cfg,
+    auto model = causallm::Factory::Instance().create(architecture, cfg,
                                                       generation_cfg, nntr_cfg);
     if (!model) {
       std::cerr << "Unknown architecture: " << architecture << std::endl;
       std::cerr << "Registered architectures:";
-      quick_dot_ai::Factory::Instance().printRegistered(std::cerr);
+      causallm::Factory::Instance().printRegistered(std::cerr);
       std::cerr << std::endl;
       return EXIT_FAILURE;
     }
     model->initialize();
     model->load_weight(weight_file);
 
+    bool do_sample = generation_cfg.value("do_sample", false);
+
 #ifdef PROFILE
     start_peak_tracker();
 #endif
 #if defined(_WIN32)
-    model->run(input_text.c_str(), system_head_prompt.c_str(),
+    model->run(input_text.c_str(), do_sample, system_head_prompt.c_str(),
                system_tail_prompt.c_str());
 #else
-    model->run(input_text, system_head_prompt, system_tail_prompt);
+    model->run(input_text, do_sample, system_head_prompt, system_tail_prompt);
 #endif
 #ifdef PROFILE
     stop_and_print_peak();

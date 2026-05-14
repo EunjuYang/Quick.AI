@@ -26,7 +26,7 @@
 #include <common_properties.h>
 #include <layer_impl.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 namespace props {
 
@@ -90,9 +90,9 @@ public:
                              bool training) override;
 
   /**
-￼   * @copydoc Layer::incremental_forwarding(RunLayerContext &context, unsigned
-￼   * int from, unsigned int to, bool training)
-￼   */
+￠   * @copydoc Layer::incremental_forwarding(RunLayerContext &context, unsigned
+￠   * int from, unsigned int to, bool training)
+￠   */
   WIN_EXPORT void incremental_forwarding(nntrainer::RunLayerContext &context,
                                          unsigned int from, unsigned int to,
                                          bool training) override;
@@ -147,7 +147,7 @@ private:
   std::array<unsigned int, 3> weight_idx; /**< indices of the weights */
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /* __cplusplus */
 #endif /* __QKV_LAYER_H__ */

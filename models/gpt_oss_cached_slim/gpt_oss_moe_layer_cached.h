@@ -21,7 +21,7 @@
 #include <layer_impl.h>
 #include <list>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @class   GptOssMoELayer
@@ -159,7 +159,7 @@ private:
     unsigned int hidden_size);
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /** __cplusplus */
 #endif /** __GPT_OSS_MOE_LAYER_CACHED_H__ */

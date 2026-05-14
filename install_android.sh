@@ -4,7 +4,7 @@
 set -e
 
 # Configuration
-INSTALL_DIR="/data/local/tmp/quick_dot_ai"
+INSTALL_DIR="/data/local/tmp/nntrainer/causallm"
 MODEL_DIR="$INSTALL_DIR/models"
 
 # Set SCRIPT_DIR
@@ -62,9 +62,9 @@ log_success "Device connected: $DEVICE_ID"
 # Check if all required files exist
 log_step "2/3" "Check build artifacts"
 REQUIRED_FILES=(
-    "$SCRIPT_DIR/jni/libs/arm64-v8a/quick_dot_ai"
-    "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_core.so"
-    "$SCRIPT_DIR/jni/libs/arm64-v8a/quick_dot_ai_quantize"
+    "$SCRIPT_DIR/jni/libs/arm64-v8a/nntrainer_causallm"
+    "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_core.so"
+    "$SCRIPT_DIR/jni/libs/arm64-v8a/nntr_quantize"
 )
 
 # Optional dependency files (might not be in libs/arm64-v8a depending on build)
@@ -133,7 +133,7 @@ log_success "All required build artifacts found"
 
 # Check optional files (API and test app)
 OPTIONAL_FILES=(
-    "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_api.so"
+    "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_api.so"
     "$SCRIPT_DIR/jni/libs/arm64-v8a/test_api"
 )
 
@@ -153,9 +153,9 @@ log_success "Directories created"
 
 # Push executables
 log_info "Pushing executables..."
-adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/quick_dot_ai" "$INSTALL_DIR/" 2>&1 | tail -1
-adb shell "chmod 755 $INSTALL_DIR/quick_dot_ai"
-log_success "quick_dot_ai pushed"
+adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/nntrainer_causallm" "$INSTALL_DIR/" 2>&1 | tail -1
+adb shell "chmod 755 $INSTALL_DIR/nntrainer_causallm"
+log_success "nntrainer_causallm pushed"
 
 # Push optional test_api if exists
 if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/test_api" ]; then
@@ -166,37 +166,30 @@ if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/test_api" ]; then
 fi
 
 
-log_info "Pushing quick_dot_ai_quantize..."
-adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/quick_dot_ai_quantize" "$INSTALL_DIR/" 2>&1 | tail -1
-adb shell "chmod 755 $INSTALL_DIR/quick_dot_ai_quantize"
-log_success "quick_dot_ai_quantize pushed"
+log_info "Pushing nntr_quantize..."
+adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/nntr_quantize" "$INSTALL_DIR/" 2>&1 | tail -1
+adb shell "chmod 755 $INSTALL_DIR/nntr_quantize"
+log_success "nntr_quantize pushed"
 
 # Push shared libraries
 log_info "Pushing shared libraries..."
-log_info "  [1/6] libquick_dot_ai_core.so (CausalLM Core library)..."
-adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_core.so" "$INSTALL_DIR/" 2>&1 | tail -1
+log_info "  [1/5] libcausallm_core.so (CausalLM Core library)..."
+adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_core.so" "$INSTALL_DIR/" 2>&1 | tail -1
 
-log_info "  [2/6] libnntrainer.so (nntrainer library)..."
+log_info "  [2/5] libnntrainer.so (nntrainer library)..."
 adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libnntrainer.so" "$INSTALL_DIR/" 2>&1 | tail -1
 
-log_info "  [3/6] libccapi-nntrainer.so (nntrainer C/C API)..."
+log_info "  [3/5] libccapi-nntrainer.so (nntrainer C/C API)..."
 adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libccapi-nntrainer.so" "$INSTALL_DIR/" 2>&1 | tail -1
 
-log_info "  [4/6] libc++_shared.so (C++ runtime)..."
+log_info "  [4/5] libc++_shared.so (C++ runtime)..."
 adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libc++_shared.so" "$INSTALL_DIR/" 2>&1 | tail -1
 
-log_info "  [5/6] libomp.so (OpenMP runtime)..."
-if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libomp.so" ]; then
-    adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libomp.so" "$INSTALL_DIR/" 2>&1 | tail -1
+log_info "  [5/5] libcausallm_api.so (CausalLM API library)..."
+if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_api.so" ]; then
+    adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_api.so" "$INSTALL_DIR/" 2>&1 | tail -1
 else
-    log_warning "libomp.so not found (skipping)"
-fi
-
-log_info "  [6/6] libquick_dot_ai_api.so (CausalLM API library)..."
-if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_api.so" ]; then
-    adb push "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_api.so" "$INSTALL_DIR/" 2>&1 | tail -1
-else
-    log_warning "libquick_dot_ai_api.so not found (Optional, skipping)"
+    log_warning "libcausallm_api.so not found (Optional, skipping)"
 fi
 
 log_success "All libraries pushed"
@@ -206,8 +199,9 @@ log_info "Creating run script on device..."
 adb shell "cat > $INSTALL_DIR/run_causallm.sh << 'EOF'
 #!/system/bin/sh
 export LD_LIBRARY_PATH=$INSTALL_DIR:\$LD_LIBRARY_PATH
+export NNTR_NUM_THREADS=4
 cd $INSTALL_DIR
-./quick_dot_ai \$@
+./nntrainer_causallm \$@
 EOF
 "
 adb shell "chmod 755 $INSTALL_DIR/run_causallm.sh"
@@ -217,7 +211,7 @@ adb shell "cat > $INSTALL_DIR/run_quantize.sh << 'EOF'
 #!/system/bin/sh
 export LD_LIBRARY_PATH=$INSTALL_DIR:\$LD_LIBRARY_PATH
 cd $INSTALL_DIR
-./quick_dot_ai_quantize \$@
+./nntr_quantize \$@
 EOF"
 
 adb shell "chmod 755 $INSTALL_DIR/run_quantize.sh"
@@ -227,6 +221,7 @@ if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/test_api" ]; then
     adb shell "cat > $INSTALL_DIR/run_test_api.sh << 'EOF'
 #!/system/bin/sh
 export LD_LIBRARY_PATH=$INSTALL_DIR:\$LD_LIBRARY_PATH
+export NNTR_NUM_THREADS=4
 cd $INSTALL_DIR
 ./test_api \$@
 EOF
@@ -242,18 +237,17 @@ log_header "Installation Complete!"
 log_info "Device: $DEVICE_ID"
 log_info "Install directory: $INSTALL_DIR"
 log_info "Installed files:"
-log_info "  - quick_dot_ai (executable)"
+log_info "  - nntrainer_causallm (executable)"
 if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/test_api" ]; then
     log_info "  - test_api (executable)"
 fi
-log_info "  - libquick_dot_ai_core.so (CausalLM Core library)"
-if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libquick_dot_ai_api.so" ]; then
-    log_info "  - libquick_dot_ai_api.so (CausalLM API library)"
+log_info "  - libcausallm_core.so (CausalLM Core library)"
+if [ -f "$SCRIPT_DIR/jni/libs/arm64-v8a/libcausallm_api.so" ]; then
+    log_info "  - libcausallm_api.so (CausalLM API library)"
 fi
 log_info "  - libnntrainer.so"
 log_info "  - libccapi-nntrainer.so"
 log_info "  - libc++_shared.so"
-log_info "  - libomp.so (if available)"
 log_header "How to run"
 log_info "To run CausalLM on the device:"
 log_info "  1. Push your model files to: $MODEL_DIR/"

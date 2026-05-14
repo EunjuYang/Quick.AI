@@ -5,5 +5,5 @@ qwen3_src = [
 
 qwen3_inc = include_directories('.')
 
-quick_dot_ai_src += qwen3_src
-quick_dot_ai_inc += qwen3_inc
+causallm_src += qwen3_src
+causallm_inc += qwen3_inc

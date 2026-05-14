@@ -16,7 +16,7 @@
 
 #include <causal_lm.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @brief Qwen3Transformer class
@@ -58,6 +58,6 @@ public:
 
 private:
 };
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /* __QWEN3_CAUSAL_LM_H__ */

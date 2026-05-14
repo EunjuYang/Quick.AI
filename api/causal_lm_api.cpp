@@ -39,7 +39,7 @@
 
 using json = nlohmann::json;
 
-static std::unique_ptr<quick_dot_ai::TransformerBase> g_model;
+static std::unique_ptr<causallm::Transformer> g_model;
 static std::mutex g_mutex;
 static bool g_initialized = false;
 static std::string g_architecture = "";
@@ -47,7 +47,7 @@ static bool g_use_chat_template = false;
 static bool g_verbose = false;
 static std::string g_last_output = "";
 static double g_initialization_duration_ms = 0.0;
-static quick_dot_ai::ChatTemplate g_chat_template;
+static causallm::ChatTemplate g_chat_template;
 
 static std::map<std::string, std::string> g_model_path_map = {
   {"QWEN3-0.6B", "qwen3-0.6b"},
@@ -71,52 +71,52 @@ static std::map<std::string, ModelArchConfig> g_arch_config_map;
 static void register_models() {
   static std::once_flag flag;
   std::call_once(flag, []() {
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "LlamaForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::CausalLM>(cfg, generation_cfg,
+        return std::make_unique<causallm::CausalLM>(cfg, generation_cfg,
                                                     nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "Qwen2ForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::Qwen2CausalLM>(cfg, generation_cfg,
+        return std::make_unique<causallm::Qwen2CausalLM>(cfg, generation_cfg,
                                                          nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "Qwen3ForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::Qwen3CausalLM>(cfg, generation_cfg,
+        return std::make_unique<causallm::Qwen3CausalLM>(cfg, generation_cfg,
                                                          nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "Qwen3MoeForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::Qwen3MoECausalLM>(cfg, generation_cfg,
+        return std::make_unique<causallm::Qwen3MoECausalLM>(cfg, generation_cfg,
                                                             nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "Qwen3SlimMoeForCausalLM",
       [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::Qwen3SlimMoECausalLM>(
+        return std::make_unique<causallm::Qwen3SlimMoECausalLM>(
           cfg, generation_cfg, nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "Qwen3CachedSlimMoeForCausalLM",
       [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::Qwen3CachedSlimMoECausalLM>(
+        return std::make_unique<causallm::Qwen3CachedSlimMoECausalLM>(
           cfg, generation_cfg, nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "GptOssForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::GptOssForCausalLM>(
+        return std::make_unique<causallm::GptOssForCausalLM>(
           cfg, generation_cfg, nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "GptOssCachedSlimCausalLM",
       [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::GptOssCachedSlimCausalLM>(
+        return std::make_unique<causallm::GptOssCachedSlimCausalLM>(
           cfg, generation_cfg, nntr_cfg);
       });
-    quick_dot_ai::Factory::Instance().registerModel(
+    causallm::Factory::Instance().registerModel(
       "Gemma3ForCausalLM", [](json cfg, json generation_cfg, json nntr_cfg) {
-        return std::make_unique<quick_dot_ai::Gemma3CausalLM>(cfg, generation_cfg,
+        return std::make_unique<causallm::Gemma3CausalLM>(cfg, generation_cfg,
                                                           nntr_cfg);
       });
 
@@ -262,7 +262,7 @@ static void validate_models() {
             // Optional: Parse nntr_config to check bin
             try {
               json nntr =
-                quick_dot_ai::LoadJsonFile(resolved_path + "/nntr_config.json");
+                causallm::LoadJsonFile(resolved_path + "/nntr_config.json");
               if (nntr.contains("model_file_name")) {
                 std::string bin = nntr["model_file_name"];
                 if (check_file_exists(resolved_path + "/" + bin)) {
@@ -463,10 +463,10 @@ ErrorCode loadModel(BackendType compute, ModelType modeltype,
       model_dir_path = resolve_model_path(target_model_name, quant_type);
 
       // Load configuration files
-      cfg = quick_dot_ai::LoadJsonFile(model_dir_path + "/config.json");
+      cfg = causallm::LoadJsonFile(model_dir_path + "/config.json");
       generation_cfg =
-        quick_dot_ai::LoadJsonFile(model_dir_path + "/generation_config.json");
-      nntr_cfg = quick_dot_ai::LoadJsonFile(model_dir_path + "/nntr_config.json");
+        causallm::LoadJsonFile(model_dir_path + "/generation_config.json");
+      nntr_cfg = causallm::LoadJsonFile(model_dir_path + "/nntr_config.json");
 
       if (nntr_cfg.contains("tokenizer_file")) {
         std::string t_file = nntr_cfg["tokenizer_file"];
@@ -477,7 +477,7 @@ ErrorCode loadModel(BackendType compute, ModelType modeltype,
     // Load chat template from tokenizer_config.json if available
     std::string tc_path = model_dir_path + "/tokenizer_config.json";
     if (check_file_exists(tc_path)) {
-      g_chat_template = quick_dot_ai::ChatTemplate::fromFile(tc_path);
+      g_chat_template = causallm::ChatTemplate::fromFile(tc_path);
       if (g_chat_template.isAvailable()) {
         std::cout << "[Info] Chat template loaded from tokenizer_config.json"
                   << std::endl;
@@ -488,7 +488,7 @@ ErrorCode loadModel(BackendType compute, ModelType modeltype,
           << std::endl;
       }
     } else {
-      g_chat_template = quick_dot_ai::ChatTemplate();
+      g_chat_template = causallm::ChatTemplate();
       std::cerr << "[Warning] tokenizer_config.json not found in "
                 << model_dir_path << ". Using hardcoded chat templates."
                 << std::endl;
@@ -518,7 +518,7 @@ ErrorCode loadModel(BackendType compute, ModelType modeltype,
       return CAUSAL_LM_ERROR_INVALID_PARAMETER;
     }
 
-    g_model = quick_dot_ai::Factory::Instance().create(architecture, cfg,
+    g_model = causallm::Factory::Instance().create(architecture, cfg,
                                                    generation_cfg, nntr_cfg);
     if (!g_model) {
       return CAUSAL_LM_ERROR_MODEL_LOAD_FAILED;
@@ -565,13 +565,13 @@ ErrorCode runModel(const char *inputTextPrompt, const char **outputText) {
 
 // We assume single batch request for this API
 #if defined(_WIN32)
-    g_model->run(std::wstring(input.begin(), input.end()), L"", L"", nullptr,
+    g_model->run(std::wstring(input.begin(), input.end()), false, L"", L"",
                  g_verbose);
 #else
-    g_model->run(input, "", "", nullptr, g_verbose);
+    g_model->run(input, false, "", "", g_verbose);
 #endif
 
-    auto causal_lm_model = dynamic_cast<quick_dot_ai::CausalLM *>(g_model.get());
+    auto causal_lm_model = dynamic_cast<causallm::CausalLM *>(g_model.get());
     g_last_output = ""; // Reset last output
     if (causal_lm_model) {
       g_last_output = causal_lm_model->getOutput(0);
@@ -597,7 +597,7 @@ ErrorCode getPerformanceMetrics(PerformanceMetrics *metrics) {
 
   try {
     std::lock_guard<std::mutex> lock(g_mutex);
-    auto causal_lm_model = dynamic_cast<quick_dot_ai::CausalLM *>(g_model.get());
+    auto causal_lm_model = dynamic_cast<causallm::CausalLM *>(g_model.get());
 
     if (causal_lm_model) {
       if (!causal_lm_model->hasRun()) {

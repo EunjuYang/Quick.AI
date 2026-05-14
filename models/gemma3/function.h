@@ -18,7 +18,7 @@
 
 using json = nlohmann::json;
 
-namespace quick_dot_ai {
+namespace causallm {
 namespace gemma3 {
 
 /**
@@ -29,6 +29,6 @@ namespace gemma3 {
 std::string apply_function_gemma_template(const json &chat_input);
 
 } // namespace gemma3
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif // __GEMMA3_FUNCTION_H__
