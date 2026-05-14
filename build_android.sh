@@ -1,8 +1,26 @@
 #!/bin/bash
 
 # Build script for CausalLM Android application
-# This script builds libquick_dot_ai_core.so and quick_dot_ai executable
+# This script builds libcausallm_core.so and nntrainer_causallm executable
 set -e
+
+# Parse options
+USE_BUILD_CACHE=0
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --cache)
+            USE_BUILD_CACHE=1
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: $0 [--cache]"
+            echo "  --cache  Reuse existing nntrainer builddir if available"
+            exit 1
+            ;;
+    esac
+done
+
 
 # Color codes
 RED='\033[0;31m'
@@ -77,29 +95,28 @@ fi
 
 # Set NNTRAINER_ROOT
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NNTRAINER_ROOT="${NNTRAINER_ROOT:-$(cd "$SCRIPT_DIR/subprojects/nntrainer" && pwd)}"
+NNTRAINER_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 export NNTRAINER_ROOT
 
 log_header "Build CausalLM Android Application"
 log_info "NNTRAINER_ROOT: $NNTRAINER_ROOT"
+log_info "Build cache: $([ "$USE_BUILD_CACHE" -eq 1 ] && echo 'enabled' || echo 'disabled (default)')"
 log_info "ANDROID_NDK: $ANDROID_NDK"
 log_info "Working directory: $(pwd)"
 
 # Step 1: Build nntrainer for Android if not already built
 log_step "1/4" "Build nntrainer for Android"
 
-if [ ! -f "$NNTRAINER_ROOT/builddir/android_build_result/lib/arm64-v8a/libnntrainer.so" ]; then
+if [ "$USE_BUILD_CACHE" -eq 1 ] && [ -f "$NNTRAINER_ROOT/builddir/android_build_result/lib/arm64-v8a/libnntrainer.so" ]; then
+    log_info "Build cache enabled: reusing existing nntrainer builddir (skipping)"
+else
     log_info "Building nntrainer for Android..."
     cd "$NNTRAINER_ROOT"
     if [ -d "$NNTRAINER_ROOT/builddir" ]; then
+        log_info "Removing existing builddir..."
         rm -rf builddir
     fi
-    # Use a user-writable prefix so `meson install` does not try to
-    # escalate privileges to write into /usr/local (fails in CI / non-
-    # interactive environments).
-    ./tools/package_android.sh "-Dprefix=$NNTRAINER_ROOT/builddir/install"
-else
-    log_info "nntrainer for Android already built (skipping)"
+    ./tools/package_android.sh
 fi
 
 # Check if build was successful
@@ -134,12 +151,10 @@ log_step "3/4" "Prepare json.hpp"
 
 if [ ! -f "$SCRIPT_DIR/json.hpp" ]; then
     log_info "json.hpp not found. Downloading..."
-    # Use Quick.AI's own prepare_encoder.sh so the downloaded json.hpp
-    # is copied to the Quick.AI project root (the nntrainer submodule
-    # ships a legacy variant that drops it into Applications/CausalLM/
-    # instead and leaves our expected location empty).
-    "$SCRIPT_DIR/jni/prepare_encoder.sh" "$NNTRAINER_ROOT/builddir" "0.2"
-
+    # prepare_encoder.sh expects target directory as first argument and version as second
+    # It copies json.hpp to ../Applications/CausalLM/ if version is 0.2
+    "$NNTRAINER_ROOT/jni/prepare_encoder.sh" "$NNTRAINER_ROOT/builddir" "0.2"
+    
     if [ ! -f "$SCRIPT_DIR/json.hpp" ]; then
         log_error "Failed to download json.hpp"
         exit 1
@@ -149,7 +164,7 @@ else
 fi
 log_success "json.hpp ready"
 
-# Step 4: Build CausalLM (libquick_dot_ai_core.so and quick_dot_ai)
+# Step 4: Build CausalLM (libcausallm_core.so and nntrainer_causallm)
 log_step "4/4" "Build CausalLM Core (library + executable)"
 
 cd "$SCRIPT_DIR/jni"
@@ -157,9 +172,9 @@ cd "$SCRIPT_DIR/jni"
 # Clean previous builds
 rm -rf libs obj
 
-log_info "Building with ndk-build (builds quick_dot_ai_core, quick_dot_ai, quick_dot_ai_quantize)..."
+log_info "Building with ndk-build (builds causallm_core, nntrainer_causallm, nntr_quantize)..."
 # We explicitly set paths to ensure outputs are predictable
-if ndk-build NDK_PROJECT_PATH=. NDK_LIBS_OUT=./libs NDK_OUT=./obj APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk quick_dot_ai_core quick_dot_ai  quick_dot_ai_quantize -j $(nproc); then
+if ndk-build NDK_PROJECT_PATH=. NDK_LIBS_OUT=./libs NDK_OUT=./obj APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk causallm_core nntrainer_causallm  nntr_quantize -j $(nproc); then
     log_success "Build completed successfully"
 else
     log_error "Build failed"
@@ -169,18 +184,18 @@ fi
 # Verify outputs
 log_info "Build artifacts:"
 
-check_artifact "libquick_dot_ai_core.so" || exit 1
-check_artifact "quick_dot_ai" || exit 1
-check_artifact "quick_dot_ai_quantize" || exit 1
+check_artifact "libcausallm_core.so" || exit 1
+check_artifact "nntrainer_causallm" || exit 1
+check_artifact "nntr_quantize" || exit 1
 
 # Summary
 log_header "Build Summary"
 log_success "Build completed successfully!"
 log_info "Output files are in: $SCRIPT_DIR/jni/libs/arm64-v8a/"
 log_info "Executables:"
-log_info "  - quick_dot_ai (main application), quick_dot_ai_quantize"
+log_info "  - nntrainer_causallm (main application), nntr_quantize"
 log_info "Libraries:"
-log_info "  - libquick_dot_ai_core.so (CausalLM Core library)"
+log_info "  - libcausallm_core.so (CausalLM Core library)"
 log_info "  - libnntrainer.so (nntrainer library)"
 log_info "  - libccapi-nntrainer.so (nntrainer C/C API)"
 log_info "  - libc++_shared.so (C++ runtime)"
