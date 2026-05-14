@@ -12,11 +12,11 @@
 
 #include <qwen3_embedding.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 void Qwen3Embedding::registerCustomLayers() {
   SentenceTransformer::registerCustomLayers();
   Qwen3Transformer::registerCustomLayers();
 }
 
-} // namespace quick_dot_ai
+} // namespace causallm
