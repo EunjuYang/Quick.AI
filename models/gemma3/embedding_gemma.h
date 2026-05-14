@@ -17,7 +17,7 @@
 #include <gemma3_causallm.h>
 #include <sentence_transformer.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @brief EmbeddingGemma Class
@@ -58,6 +58,6 @@ public:
   void registerCustomLayers() override;
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif // __EMBEDDING_GEMMA_H__

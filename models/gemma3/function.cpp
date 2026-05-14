@@ -16,7 +16,7 @@
 #include <sstream>
 #include <vector>
 
-namespace quick_dot_ai {
+namespace causallm {
 namespace gemma3 {
 
 // Helper to escape string values
@@ -215,4 +215,4 @@ std::string apply_function_gemma_template(const json &chat_input) {
 }
 
 } // namespace gemma3
-} // namespace quick_dot_ai
+} // namespace causallm
