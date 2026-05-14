@@ -24,19 +24,46 @@
 #define __TRANSFORMER_H__
 
 #pragma once
+#ifdef _WIN32
+#define WIN_EXPORT __declspec(dllexport)
+#define WSTR std::wstring
+#define WCHAR_P wchar_t *
+#else
+#define WIN_EXPORT
+#define WSTR std::string
+#define WCHAR_P std::string &
+#endif
 
-#include <limits.h>
+#include <layer.h>
 #include <map>
+#include <model.h>
 #include <random>
 
-#include <transformer_base.h>
+#include <limits.h>
 
-namespace quick_dot_ai {
+#include "json.hpp"
+#include "performance_metrics.h"
+#include <fstream>
+#include <tokenizers_c.h>
+#include <tokenizers_cpp.h>
+
+namespace causallm {
+
+/*** ALIAS ****/
+using LayerHandle = std::shared_ptr<ml::train::Layer>;
+using ModelHandle = std::unique_ptr<ml::train::Model>;
+
+using json = nlohmann::json;
+
+/**
+ * @brief Model Type Enum
+ */
+enum class ModelType { MODEL, CAUSALLM, EMBEDDING, UNKNOWN };
 
 /**
  * @brief Transformer Class
  */
-WIN_EXPORT class Transformer : virtual public TransformerBase {
+WIN_EXPORT class Transformer {
 
 public:
   /**
@@ -57,17 +84,17 @@ public:
   /**
    * @brief Initialize and Construct the Transformer model
    */
-  void initialize() override;
+  virtual void initialize();
 
   /**
    * @brief Load the model weights from a file
    */
-  void load_weight(const std::string &weight_path) override;
+  virtual void load_weight(const std::string &weight_path);
 
   /**
    * @brief Save the weight to a file
    */
-  void save_weight(const std::string &weight_path) override;
+  virtual void save_weight(const std::string &weight_path);
 
   /**
    * @brief Save the weight to a file with type conversion
@@ -75,24 +102,18 @@ public:
    * @param dtype Global target data type for all layers (NONE = keep original)
    * @param layer_dtype_map Per-layer data type overrides (layer_name -> dtype)
    */
-  void save_weight(const std::string &weight_path,
-                   ml::train::TensorDim::DataType dtype,
-                   const std::map<std::string, ml::train::TensorDim::DataType>
-                     &layer_dtype_map = {}) override;
+  virtual void
+  save_weight(const std::string &weight_path,
+              ml::train::TensorDim::DataType dtype,
+              const std::map<std::string, ml::train::TensorDim::DataType>
+                &layer_dtype_map = {});
 
   /**
-   * @copydoc TransformerBase::run(const WSTR, void *, bool)
+   * @brief run the Transformer model
    */
-  void run(const WSTR prompt, void *output_buf = nullptr,
-           bool log_output = true) override;
-
-  /**
-   * @brief TransformerBase::run(const WSTR, const WSTR, const WSTR, void *,
-   * bool)
-   */
-  void run(const WSTR prompt, const WSTR system_prompt = "",
-           const WSTR tail_prompt = "", void *output_buf = nullptr,
-           bool log_output = true) override;
+  virtual void run(const WSTR prompt, bool do_sample = false,
+                   const WSTR system_prompt = "", const WSTR tail_prompt = "",
+                   bool log_output = true);
 
   /**
    * @brief Get TransformerPerformanceMetrics
@@ -138,12 +159,26 @@ protected:
    */
   virtual void registerCustomLayers();
 
+  /**
+   * @brief register Outputs
+   */
+  bool is_initialized = false; /**< Flag to check if the model is initialized */
+  ModelHandle model;
+
+  /** tokenizer */
+  std::unique_ptr<tokenizers::Tokenizer> tokenizer;
+
+  unsigned int NUM_VOCAB;
+  int DIM;
   int HEAD_DIM;
   int INTERMEDIATE_SIZE;
+  int NUM_LAYERS;
   bool USE_VOCAB_SELECTION;
   bool TIE_WORD_EMBEDDINGS;
+  unsigned int MAX_SEQ_LEN;
   int NUM_HEADS;
   int NUM_KEY_VALUE_HEADS;
+  int NUM_TO_GENERATE;
   std::string MODEL_TENSOR_TYPE;
   std::string EMBEDDING_DTYPE; /** embedding dtype */
   std::string FC_LAYER_DTYPE;  /** custom_fc_lora */
@@ -155,6 +190,8 @@ protected:
   float EMBEDDING_SCALE = 1.0f;
   int GQA_SIZE;
 
+  unsigned int BATCH_SIZE;              /**< Batch size for the model */
+  unsigned int INIT_SEQ_LEN;            /**< Initial sequence length */
   unsigned int MAX_POSITION_EMBEDDINGS; /**< max_position embeddings */
   bool MEMORY_SWAP;                     /**< memory swap option */
   unsigned int FSU_LOOKAHEAD;
@@ -164,7 +201,19 @@ protected:
   // Performance metrics
   TransformerPerformanceMetrics performance_metrics;
 };
-
-} // namespace quick_dot_ai
-
-#endif
+/**
+ * Loads JSON data from a file with detailed error handling
+ * @param file_path Path to JSON file
+ * @return JSON object
+ * @throws std::runtime_error on file open or parse failure
+ */
+inline json LoadJsonFile(const std::string &file_path) {
+  std::ifstream file(file_path);
+  if (!file.is_open()) {
+    throw std::runtime_error("Failed to open file: " + file_path +
+                             " | Reason: " + std::strerror(errno));
+  }
+  std::requestrror("Failed to load model weights with dtype: " +
+                             std::string(e.what()));
+  }
+};

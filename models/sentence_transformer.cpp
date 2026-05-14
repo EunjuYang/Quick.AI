@@ -19,7 +19,7 @@
 #include <filesystem>
 #include <iostream>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 SentenceTransformer::SentenceTransformer(json &cfg, json &generation_cfg,
                                          json &nntr_cfg) :
@@ -178,13 +178,8 @@ void SentenceTransformer::addModule(const std::string &type, int idx) {
   model->addLayer(layer);
 }
 
-void SentenceTransformer::run(const WSTR prompt, void *output_buf,
-                              bool log_output) {
-  run(prompt, "", "", output_buf, log_output);
-}
-
-void SentenceTransformer::run(const WSTR prompt, const WSTR system_prompt,
-                              const WSTR tail_prompt, void *output_buf,
+void SentenceTransformer::run(const WSTR prompt, bool do_sample,
+                              const WSTR system_prompt, const WSTR tail_prompt,
                               bool log_output) {
 
   try {
@@ -208,14 +203,9 @@ void SentenceTransformer::run(const WSTR prompt, const WSTR system_prompt,
       }
     }
 
-    if (output_buf != nullptr) {
-      // Caller is responsible for dellocation
-      *static_cast<std::vector<float *> *>(output_buf) = results;
-    } else {
-      // output should be deallocated after use.
-      for (auto out : results) {
-        delete[] out;
-      }
+    // output should be deallocated after use.
+    for (auto out : results) {
+      delete[] out;
     }
   } catch (const std::exception &e) {
     std::cerr << "Error during embedding run: " << e.what() << std::endl;
@@ -293,13 +283,13 @@ void SentenceTransformer::registerCustomLayers() {
 
   try {
     app_context->registerFactory(
-      nntrainer::createLayer<quick_dot_ai::EmbeddingPoolingLayer>);
+      nntrainer::createLayer<causallm::EmbeddingPoolingLayer>);
     app_context->registerFactory(
-      nntrainer::createLayer<quick_dot_ai::EmbeddingNormalizeLayer>);
+      nntrainer::createLayer<causallm::EmbeddingNormalizeLayer>);
   } catch (std::invalid_argument &e) {
     std::cerr << "failed to register factory, reason: " << e.what()
               << std::endl;
   }
 }
 
-} // namespace quick_dot_ai
+} // namespace causallm

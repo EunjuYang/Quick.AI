@@ -19,7 +19,7 @@
 #include <map>
 #include <transformer.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @brief SentenceTransformer Class
@@ -41,16 +41,10 @@ public:
   virtual ~SentenceTransformer() {}
 
   /**
-   * @brief run the SentenceTransformer model (simple)
+   * @brief run the SentenceTransformer model
    */
-  void run(const WSTR prompt, void *output_buf = nullptr,
-           bool log_output = true) override;
-
-  /**
-   * @brief run the SentenceTransformer model (full)
-   */
-  void run(const WSTR prompt, const WSTR system_prompt = "",
-           const WSTR tail_prmopt = "", void *output_buf = nullptr,
+  void run(const WSTR prompt, bool do_sample = false,
+           const WSTR system_prompt = "", const WSTR tail_prmopt = "",
            bool log_output = true) override;
 
   /**
@@ -117,6 +111,6 @@ private:
   std::string getLastComponent(const std::string &type);
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif
