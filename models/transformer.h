@@ -213,7 +213,16 @@ inline json LoadJsonFile(const std::string &file_path) {
     throw std::runtime_error("Failed to open file: " + file_path +
                              " | Reason: " + std::strerror(errno));
   }
-  std::requestrror("Failed to load model weights with dtype: " +
-                             std::string(e.what()));
+
+  try {
+    json data;
+    file >> data;
+    return data;
+  } catch (const json::parse_error &e) {
+    throw std::runtime_error("JSON parse error in " + file_path +
+                             " | Details: " + e.what());
   }
-};
+}
+} // namespace causallm
+
+#endif
