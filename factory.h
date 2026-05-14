@@ -15,10 +15,10 @@
 #define __CAUSALLM_FACTORY_H__
 
 #include <ostream>
-#include <transformer_base.h>
+#include <transformer.h>
 #include <unordered_map>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @brief Factory class
@@ -26,7 +26,7 @@ namespace quick_dot_ai {
 class Factory {
 public:
   using Creator =
-    std::function<std::unique_ptr<TransformerBase>(json &, json &, json &)>;
+    std::function<std::unique_ptr<Transformer>(json &, json &, json &)>;
 
   static Factory &Instance() {
     static Factory factory;
@@ -37,9 +37,9 @@ public:
     creators[key] = creator;
   }
 
-  std::unique_ptr<TransformerBase> create(const std::string &key, json &cfg,
-                                          json &generation_cfg,
-                                          json &nntr_cfg) const {
+  std::unique_ptr<Transformer> create(const std::string &key, json &cfg,
+                                      json &generation_cfg,
+                                      json &nntr_cfg) const {
     auto it = creators.find(key);
     if (it != creators.end()) {
       return (it->second)(cfg, generation_cfg, nntr_cfg);
@@ -57,6 +57,6 @@ private:
   std::unordered_map<std::string, Creator> creators;
 };
 
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif
