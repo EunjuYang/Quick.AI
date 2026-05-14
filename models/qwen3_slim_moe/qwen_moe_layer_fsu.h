@@ -25,7 +25,7 @@
 #include <common_properties.h>
 #include <layer_impl.h>
 
-namespace quick_dot_ai {
+namespace causallm {
 
 /**
  * @class   SlimMoELayer
@@ -157,7 +157,7 @@ private:
     const nntrainer::Tensor &gate_proj, const nntrainer::Tensor &up_proj,
     const nntrainer::Tensor &down_proj, unsigned int hidden_size);
 };
-} // namespace quick_dot_ai
+} // namespace causallm
 
 #endif /* __cplusplus */
 #endif /* __MOE_LAYER_H__ */
